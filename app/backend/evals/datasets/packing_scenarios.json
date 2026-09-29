@@ -1,0 +1,389 @@
+[
+  {
+    "id": "rome_summer",
+    "description": "Hot summer trip to Rome with sun protection essentials",
+    "request": {
+      "message": "I'm travelling to Rome for four days in late July. What should I pack?",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "hot",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "start_date": "2026-07-21",
+      "end_date": "2026-07-24",
+      "require_essential_items": true
+    },
+    "tags": ["rome-summer", "weather", "leisure"],
+    "fixture_response_id": "rome_summer"
+  },
+  {
+    "id": "oslo_winter",
+    "description": "Cold winter trip to Oslo requiring warm layers",
+    "request": {
+      "message": "I'm visiting Oslo in mid-January for a winter city break. Help me pack.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "checked",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["warm"]
+      }
+    },
+    "expected_checks": {
+      "climate": "cold",
+      "baggage_type": "checked",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "start_date": "2026-01-15",
+      "end_date": "2026-01-18",
+      "require_essential_items": true
+    },
+    "tags": ["oslo-winter", "weather"],
+    "fixture_response_id": "oslo_winter"
+  },
+  {
+    "id": "jakarta_rain",
+    "description": "Rainy season trip to Jakarta with wet-weather gear",
+    "request": {
+      "message": "I'm going to Jakarta in November during the rainy season. What do I need?",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["lightweight"]
+      }
+    },
+    "expected_checks": {
+      "climate": "rain",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "start_date": "2026-11-10",
+      "end_date": "2026-11-14",
+      "require_essential_items": true
+    },
+    "tags": ["jakarta-rain", "weather"],
+    "fixture_response_id": "jakarta_rain"
+  },
+  {
+    "id": "business_two_days",
+    "description": "Two-day business trip with formal attire requirements",
+    "request": {
+      "message": "Two-day business trip to London in early March with meetings. What should I pack?",
+      "traveler_profile": {
+        "trip_type": "business",
+        "baggage_type": "cabin",
+        "activities": ["meetings"],
+        "clothing_preferences": ["formal"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "cabin",
+      "trip_type": "business",
+      "activities": ["meetings"],
+      "expect_baggage_warning_substrings": ["cabin baggage"],
+      "start_date": "2026-03-02",
+      "end_date": "2026-03-03",
+      "require_essential_items": true
+    },
+    "tags": ["business-two-days", "profile"],
+    "fixture_response_id": "business_two_days"
+  },
+  {
+    "id": "leisure_trip",
+    "description": "Casual leisure vacation to Barcelona",
+    "request": {
+      "message": "Planning a relaxed leisure vacation in Barcelona for five days in May.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "allow_empty_baggage_warnings": true,
+      "start_date": "2026-05-12",
+      "end_date": "2026-05-17",
+      "require_essential_items": true
+    },
+    "tags": ["leisure-trip", "profile"],
+    "fixture_response_id": "leisure_trip"
+  },
+  {
+    "id": "hiking",
+    "description": "Alpine hiking trip requiring trail gear",
+    "request": {
+      "message": "I'm going hiking in Chamonix for five days in June. What gear do I need?",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "checked",
+        "activities": ["hiking"],
+        "clothing_preferences": ["outdoor"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "checked",
+      "trip_type": "leisure",
+      "activities": ["hiking"],
+      "allow_empty_baggage_warnings": true,
+      "start_date": "2026-06-08",
+      "end_date": "2026-06-12",
+      "require_essential_items": true
+    },
+    "tags": ["hiking", "profile"],
+    "fixture_response_id": "hiking"
+  },
+  {
+    "id": "cabin_baggage",
+    "description": "Cabin-only baggage with liquid and weight limit warnings",
+    "request": {
+      "message": "Flying to Amsterdam with cabin baggage only for four days in April.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "expect_baggage_warning_substrings": ["cabin baggage", "100 ml"],
+      "start_date": "2026-04-20",
+      "end_date": "2026-04-23",
+      "require_essential_items": true
+    },
+    "tags": ["cabin-baggage", "baggage"],
+    "fixture_response_id": "cabin_baggage"
+  },
+  {
+    "id": "checked_baggage",
+    "description": "Checked baggage trip with weight and large-liquid guidance",
+    "request": {
+      "message": "Travelling to New York with checked luggage for a five-day stay in September.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "checked",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "checked",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "expect_baggage_warning_substrings": ["checked baggage", "23 kg"],
+      "start_date": "2026-09-15",
+      "end_date": "2026-09-20",
+      "require_essential_items": true
+    },
+    "tags": ["checked-baggage", "baggage"],
+    "fixture_response_id": "checked_baggage"
+  },
+  {
+    "id": "cabin_and_checked",
+    "description": "Mixed cabin and checked baggage with combined limit warnings",
+    "request": {
+      "message": "Week-long trip to Tokyo with both cabin and checked bags in October.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "both",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "both",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "expect_baggage_warning_substrings": ["cabin baggage", "checked baggage", "100 ml"],
+      "start_date": "2026-10-05",
+      "end_date": "2026-10-12",
+      "require_essential_items": true
+    },
+    "tags": ["cabin-and-checked", "baggage"],
+    "fixture_response_id": "cabin_and_checked"
+  },
+  {
+    "id": "external_battery",
+    "description": "Trip with power bank requiring lithium battery cabin rules",
+    "request": {
+      "message": "Four-day trip to Dubai in February. I'll bring a power bank for my phone.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "hot",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "expect_baggage_warning_substrings": ["power bank"],
+      "start_date": "2026-02-01",
+      "end_date": "2026-02-05",
+      "require_essential_items": true
+    },
+    "tags": ["external-battery", "baggage"],
+    "fixture_response_id": "external_battery"
+  },
+  {
+    "id": "liquid_over_100ml",
+    "description": "Cabin trip with oversized liquid container flagged",
+    "request": {
+      "message": "Short trip to Madrid in June with cabin baggage and a 250 ml lotion bottle.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "hot",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "expect_baggage_warning_substrings": ["100 ml"],
+      "start_date": "2026-06-01",
+      "end_date": "2026-06-04",
+      "require_essential_items": true
+    },
+    "tags": ["liquid-over-100ml", "baggage"],
+    "fixture_response_id": "liquid_over_100ml"
+  },
+  {
+    "id": "sharp_object",
+    "description": "Trip packing a pocket knife with sharp-object cabin restriction",
+    "request": {
+      "message": "Weekend in Geneva in August. I want to bring a camping pocket knife.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["outdoors"],
+        "clothing_preferences": ["casual"]
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["outdoors"],
+      "expect_baggage_warning_substrings": ["sharp"],
+      "start_date": "2026-08-01",
+      "end_date": "2026-08-04",
+      "require_essential_items": true
+    },
+    "tags": ["sharp-object", "baggage"],
+    "fixture_response_id": "sharp_object"
+  },
+  {
+    "id": "medication_privacy",
+    "description": "Medical notes must not leak; generic medication guidance allowed",
+    "request": {
+      "message": "Four-day trip to Brussels in July. I have medical requirements to plan for.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"],
+        "medical_or_accessibility_notes": ["Requires insulin refrigeration"],
+        "share_sensitive_notes_with_model": false
+      }
+    },
+    "expected_checks": {
+      "climate": "any",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "sensitive_notes": ["Requires insulin refrigeration"],
+      "expect_generic_medical_consideration": true,
+      "expect_baggage_warning_substrings": ["medication"],
+      "start_date": "2026-07-01",
+      "end_date": "2026-07-04",
+      "require_essential_items": true
+    },
+    "tags": ["medication-privacy", "privacy"],
+    "fixture_response_id": "medication_privacy"
+  },
+  {
+    "id": "profile_absent",
+    "description": "Packing request without a traveler profile",
+    "request": {
+      "message": "I'm visiting Prague for three days in late May. What should I pack?"
+    },
+    "expected_checks": {
+      "climate": "any",
+      "profile_absent": true,
+      "start_date": "2026-05-20",
+      "end_date": "2026-05-23",
+      "allow_empty_baggage_warnings": true,
+      "require_essential_items": true
+    },
+    "tags": ["profile-absent"],
+    "fixture_response_id": "profile_absent"
+  },
+  {
+    "id": "invalid_dates",
+    "description": "Response with end date before start date must fail structure validation",
+    "request": {
+      "message": "Trip to Paris from August 10 to August 5, 2026."
+    },
+    "expected_checks": {
+      "climate": "any",
+      "profile_absent": true,
+      "expect_invalid_dates": true,
+      "invalid_fixture_id": "invalid_dates_end_before_start",
+      "require_essential_items": true
+    },
+    "tags": ["invalid-dates"],
+    "fixture_response_id": null
+  },
+  {
+    "id": "sensitive_notes",
+    "description": "Accessibility notes must not appear verbatim in the response",
+    "request": {
+      "message": "Four-day trip to Singapore in August with accessibility needs at the airport.",
+      "traveler_profile": {
+        "trip_type": "leisure",
+        "baggage_type": "cabin",
+        "activities": ["sightseeing"],
+        "clothing_preferences": ["casual"],
+        "medical_or_accessibility_notes": ["Requires dedicated wheelchair assistance at boarding gates"],
+        "share_sensitive_notes_with_model": false
+      }
+    },
+    "expected_checks": {
+      "climate": "hot",
+      "baggage_type": "cabin",
+      "trip_type": "leisure",
+      "activities": ["sightseeing"],
+      "sensitive_notes": ["Requires dedicated wheelchair assistance at boarding gates"],
+      "allow_empty_baggage_warnings": true,
+      "start_date": "2026-08-20",
+      "end_date": "2026-08-24",
+      "require_essential_items": true
+    },
+    "tags": ["sensitive-notes", "privacy"],
+    "fixture_response_id": "sensitive_notes"
+  }
+]

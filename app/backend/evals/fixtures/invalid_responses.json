@@ -1,0 +1,72 @@
+{
+  "invalid_dates_end_before_start": {
+    "destination": "Paris",
+    "start_date": "2026-08-10",
+    "end_date": "2026-08-05",
+    "weather_summary": {
+      "location": "Paris",
+      "overview": "Mild summer conditions expected during the requested window.",
+      "min_temperature": "16°C",
+      "max_temperature": "26°C",
+      "conditions": "Partly cloudy"
+    },
+    "packing_items": [
+      {
+        "name": "Light jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Evenings can be cool in August.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "hygiene_with_think_tags": {
+    "destination": "Lisbon",
+    "start_date": "2026-09-01",
+    "end_date": "2026-09-05",
+    "weather_summary": {
+      "location": "Lisbon",
+      "overview": "<think>Let me reason about the weather first.</think> Warm and sunny coastal weather.",
+      "min_temperature": "18°C",
+      "max_temperature": "28°C",
+      "conditions": "Clear"
+    },
+    "packing_items": [
+      {
+        "name": "T-shirt",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Warm daytime temperatures.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "missing_items": {
+    "destination": "Berlin",
+    "start_date": "2026-10-01",
+    "end_date": "2026-10-04",
+    "weather_summary": {
+      "location": "Berlin",
+      "overview": "Cool autumn weather with occasional showers.",
+      "min_temperature": "8°C",
+      "max_temperature": "15°C",
+      "conditions": "Overcast"
+    },
+    "packing_items": [],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  }
+}

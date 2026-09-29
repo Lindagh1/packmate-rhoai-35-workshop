@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0-demo",
+  "disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2 and are not airline-specific. Actual baggage policies vary by airline, route, ticket class, and local regulations. Always verify with your carrier before travelling.",
+  "general_limits": {
+    "cabin_weight_kg": 8,
+    "checked_weight_kg": 23,
+    "cabin_dimensions_cm": "55 x 40 x 23",
+    "checked_dimensions_cm": "158 cm total linear"
+  },
+  "general_rules": [
+    "Demo rule: cabin baggage is typically limited to about 8 kg and must fit in the overhead bin or under the seat.",
+    "Demo rule: checked baggage is commonly limited to about 23 kg per piece, subject to airline policy.",
+    "Demo rule: one personal item plus one cabin bag is a frequent allowance, but limits differ by airline."
+  ],
+  "rules": [
+    {
+      "id": "liquids_cabin",
+      "title": "Liquids in cabin baggage",
+      "baggage_types": ["cabin", "both"],
+      "categories": ["liquids", "toiletries"],
+      "keywords": ["liquid", "shampoo", "perfume", "water", "gel", "aerosol", "cream", "lotion"],
+      "warnings": [
+        "Demo rule: liquids in cabin baggage must be in containers of 100 ml or less, all fitting in one transparent resealable bag (max 1 L)."
+      ]
+    },
+    {
+      "id": "liquids_over_100ml_cabin",
+      "title": "Liquid containers above 100 ml in cabin",
+      "baggage_types": ["cabin", "both"],
+      "categories": ["liquids", "toiletries"],
+      "keywords": ["150ml", "200ml", "250ml", "300ml", "500ml", "1l", "1 l", "large bottle"],
+      "warnings": [
+        "Demo rule: liquid containers above 100 ml are generally not permitted in cabin baggage unless medically required and documented."
+      ]
+    },
+    {
+      "id": "sharp_objects",
+      "title": "Sharp objects",
+      "baggage_types": ["cabin", "both"],
+      "categories": ["sharp_objects", "tools"],
+      "keywords": ["knife", "razor", "scissors", "blade", "sharp", "box cutter"],
+      "warnings": [
+        "Demo rule: sharp objects such as knives, large scissors, or razor blades are usually prohibited in cabin baggage and should be placed in checked baggage if allowed."
+      ]
+    },
+    {
+      "id": "external_batteries",
+      "title": "External batteries and power banks",
+      "baggage_types": ["cabin", "both", "checked"],
+      "categories": ["electronics", "batteries"],
+      "keywords": ["power bank", "battery", "external battery", "lithium"],
+      "warnings": [
+        "Demo rule: spare lithium batteries and power banks must normally be carried in cabin baggage, not checked baggage.",
+        "Demo rule: power banks above typical airline watt-hour limits may be refused; check your carrier's limit."
+      ],
+      "unknown_warnings": [
+        "Demo rule: spare lithium batteries and power banks are subject to airline safety restrictions; confirm allowed placement with your carrier.",
+        "Demo rule: power banks above typical airline watt-hour limits may be refused; check your carrier's limit."
+      ]
+    },
+    {
+      "id": "medications",
+      "title": "Medications",
+      "baggage_types": ["cabin", "both", "checked"],
+      "categories": ["medical", "medications"],
+      "keywords": ["medication", "medicine", "prescription", "insulin", "syringe", "inhaler"],
+      "warnings": [
+        "Demo rule: essential medications should be kept in cabin baggage with supporting documentation when required.",
+        "Demo rule: liquid medications may exceed the 100 ml cabin limit when medically necessary, subject to airline approval."
+      ],
+      "unknown_warnings": [
+        "Demo rule: essential medications may require supporting documentation; verify transport rules with your airline."
+      ]
+    },
+    {
+      "id": "checked_only_liquids",
+      "title": "Large liquids in checked baggage",
+      "baggage_types": ["checked", "both"],
+      "categories": ["liquids"],
+      "keywords": ["liquid", "bottle", "wine", "shampoo"],
+      "warnings": [
+        "Demo rule: larger liquid containers are generally more suitable for checked baggage, subject to weight and spill-safe packaging."
+      ]
+    }
+  ]
+}

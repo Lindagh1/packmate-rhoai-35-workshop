@@ -1,0 +1,18 @@
+fastapi>=0.115.0
+uvicorn>=0.32.0
+# Pin pydantic to a RHOAI 3.4 cpu-ubi9 x86_64-compatible pair.
+# Newer pydantic (e.g. 2.13.3/2.13.4) needs pydantic-core 2.46.3/2.46.4 which
+# the mirror currently ships without linux_x86_64 wheels.
+pydantic==2.13.1
+httpx>=0.27.0
+openai>=1.14.0
+# RHOAI 3.4 mirror exposes mcp 1.26.0 / 1.27.0 / 1.27.2 (not 1.28+).
+mcp==1.27.2
+# RHOAI 3.4 mirror exposes json-repair 0.25.3 only (not >=0.30.0).
+json-repair==0.25.3
+prometheus-client>=0.21.0
+opentelemetry-api>=1.27.0
+opentelemetry-sdk>=1.27.0
+opentelemetry-exporter-otlp-proto-http>=1.27.0
+opentelemetry-instrumentation-fastapi>=0.48b0
+opentelemetry-instrumentation-httpx>=0.48b0

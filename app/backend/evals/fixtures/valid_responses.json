@@ -1,0 +1,665 @@
+{
+  "rome_summer": {
+    "destination": "Rome",
+    "start_date": "2026-07-21",
+    "end_date": "2026-07-24",
+    "weather_summary": {
+      "location": "Rome, Italy",
+      "overview": "Hot and sunny summer weather with strong sun exposure during the day.",
+      "min_temperature": "22°C",
+      "max_temperature": "34°C",
+      "conditions": "Mainly clear and warm"
+    },
+    "packing_items": [
+      {
+        "name": "Sunscreen SPF 50",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "High UV and hot sun during summer days in Rome.",
+        "essential": true
+      },
+      {
+        "name": "Light cotton T-shirts",
+        "category": "Clothes",
+        "quantity": 4,
+        "reason": "Breathable clothing for warm daytime heat.",
+        "essential": true
+      },
+      {
+        "name": "Sunglasses",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Bright sun and glare while sightseeing.",
+        "essential": true
+      },
+      {
+        "name": "Reusable water bottle",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Stay hydrated in hot conditions.",
+        "essential": false
+      }
+    ],
+    "warnings": ["Expect strong sun; plan shade breaks during midday heat."],
+    "baggage_warnings": [
+      "Demo rule: cabin baggage is typically limited to about 8 kg and must fit in the overhead bin or under the seat."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "oslo_winter": {
+    "destination": "Oslo",
+    "start_date": "2026-01-15",
+    "end_date": "2026-01-18",
+    "weather_summary": {
+      "location": "Oslo, Norway",
+      "overview": "Cold winter conditions with snow possible and freezing temperatures.",
+      "min_temperature": "-8°C",
+      "max_temperature": "1°C",
+      "conditions": "Snow showers and overcast skies"
+    },
+    "packing_items": [
+      {
+        "name": "Insulated winter coat",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Essential protection against cold winter air in Oslo.",
+        "essential": true
+      },
+      {
+        "name": "Thermal base layers",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Layering for sub-zero morning temperatures.",
+        "essential": true
+      },
+      {
+        "name": "Waterproof winter boots",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "Snow and icy sidewalks require warm waterproof footwear.",
+        "essential": true
+      },
+      {
+        "name": "Wool gloves and hat",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Prevent heat loss in cold outdoor conditions.",
+        "essential": true
+      }
+    ],
+    "warnings": ["Winter daylight is limited; pack reflective gear if walking at night."],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "jakarta_rain": {
+    "destination": "Jakarta",
+    "start_date": "2026-11-10",
+    "end_date": "2026-11-14",
+    "weather_summary": {
+      "location": "Jakarta, Indonesia",
+      "overview": "Tropical rain season with frequent wet afternoons and high humidity.",
+      "min_temperature": "24°C",
+      "max_temperature": "31°C",
+      "conditions": "Heavy rain and thunderstorms likely"
+    },
+    "packing_items": [
+      {
+        "name": "Compact travel umbrella",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Daily rain showers are common during the wet season.",
+        "essential": true
+      },
+      {
+        "name": "Lightweight rain jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Waterproof layer for sudden downpours.",
+        "essential": true
+      },
+      {
+        "name": "Quick-dry clothing",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Humid wet conditions dry slowly without breathable fabrics.",
+        "essential": true
+      },
+      {
+        "name": "Waterproof pouch for electronics",
+        "category": "Electronics",
+        "quantity": 1,
+        "reason": "Protect devices from rain while commuting.",
+        "essential": false
+      }
+    ],
+    "warnings": ["Flooding can occur during heavy rain; allow extra transit time."],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "business_two_days": {
+    "destination": "London",
+    "start_date": "2026-03-02",
+    "end_date": "2026-03-03",
+    "weather_summary": {
+      "location": "London, United Kingdom",
+      "overview": "Cool early-spring weather with variable clouds.",
+      "min_temperature": "5°C",
+      "max_temperature": "11°C",
+      "conditions": "Partly cloudy"
+    },
+    "packing_items": [
+      {
+        "name": "Business dress shirt",
+        "category": "Clothes",
+        "quantity": 2,
+        "reason": "Professional attire for a two-day business trip with meetings.",
+        "essential": true
+      },
+      {
+        "name": "Formal blazer",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Business meetings require a polished professional look.",
+        "essential": true
+      },
+      {
+        "name": "Dress trousers",
+        "category": "Clothes",
+        "quantity": 2,
+        "reason": "Formal business wardrobe for conference sessions.",
+        "essential": true
+      },
+      {
+        "name": "Leather dress shoes",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "Complete the professional business outfit.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [
+      "Demo rule: cabin baggage is typically limited to about 8 kg and must fit in the overhead bin or under the seat."
+    ],
+    "profile_considerations": ["Pack wrinkle-resistant business clothing for back-to-back meetings."],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "leisure_trip": {
+    "destination": "Barcelona",
+    "start_date": "2026-05-12",
+    "end_date": "2026-05-17",
+    "weather_summary": {
+      "location": "Barcelona, Spain",
+      "overview": "Pleasant spring leisure weather ideal for casual sightseeing.",
+      "min_temperature": "15°C",
+      "max_temperature": "24°C",
+      "conditions": "Mostly sunny"
+    },
+    "packing_items": [
+      {
+        "name": "Casual leisure shirts",
+        "category": "Clothes",
+        "quantity": 4,
+        "reason": "Relaxed vacation outfits for a leisure city break.",
+        "essential": true
+      },
+      {
+        "name": "Comfortable walking shoes",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "Long casual strolls through the old town.",
+        "essential": true
+      },
+      {
+        "name": "Light cardigan",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Evenings are cooler near the coast.",
+        "essential": false
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": ["This is a leisure vacation; prioritize comfort over formal wear."],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "hiking": {
+    "destination": "Chamonix",
+    "start_date": "2026-06-08",
+    "end_date": "2026-06-12",
+    "weather_summary": {
+      "location": "Chamonix, France",
+      "overview": "Alpine conditions with cool mornings and moderate daytime warmth on trails.",
+      "min_temperature": "6°C",
+      "max_temperature": "18°C",
+      "conditions": "Variable mountain weather"
+    },
+    "packing_items": [
+      {
+        "name": "Hiking boots",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "Sturdy ankle support for mountain hiking trails.",
+        "essential": true
+      },
+      {
+        "name": "Moisture-wicking hiking pants",
+        "category": "Clothes",
+        "quantity": 2,
+        "reason": "Comfortable layers for full-day hiking activity.",
+        "essential": true
+      },
+      {
+        "name": "Daypack",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Carry water and layers during hiking excursions.",
+        "essential": true
+      },
+      {
+        "name": "Trekking poles",
+        "category": "Gear",
+        "quantity": 1,
+        "reason": "Useful on steep alpine hiking routes.",
+        "essential": false
+      }
+    ],
+    "warnings": ["Mountain weather changes quickly; check trail conditions daily."],
+    "baggage_warnings": [],
+    "profile_considerations": ["Plan gear around active hiking days at altitude."],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "cabin_baggage": {
+    "destination": "Amsterdam",
+    "start_date": "2026-04-20",
+    "end_date": "2026-04-23",
+    "weather_summary": {
+      "location": "Amsterdam, Netherlands",
+      "overview": "Mild spring weather with occasional breezes.",
+      "min_temperature": "8°C",
+      "max_temperature": "16°C",
+      "conditions": "Partly cloudy"
+    },
+    "packing_items": [
+      {
+        "name": "Carry-on sized toiletry bag",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "All liquids must comply with cabin baggage limits.",
+        "essential": true
+      },
+      {
+        "name": "Light jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Comfortable layers for canal-side walks.",
+        "essential": true
+      },
+      {
+        "name": "Travel adapter",
+        "category": "Electronics",
+        "quantity": 1,
+        "reason": "Charge devices during the trip.",
+        "essential": true
+      }
+    ],
+    "warnings": ["Travelling with cabin baggage only; pack within size and weight limits."],
+    "baggage_warnings": [
+      "Demo rule: cabin baggage is typically limited to about 8 kg and must fit in the overhead bin or under the seat.",
+      "Demo rule: liquids in cabin baggage must be in containers of 100 ml or less, all fitting in one transparent resealable bag (max 1 L)."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "checked_baggage": {
+    "destination": "New York",
+    "start_date": "2026-09-15",
+    "end_date": "2026-09-20",
+    "weather_summary": {
+      "location": "New York, USA",
+      "overview": "Warm early-autumn weather suitable for urban exploration.",
+      "min_temperature": "16°C",
+      "max_temperature": "26°C",
+      "conditions": "Mostly sunny"
+    },
+    "packing_items": [
+      {
+        "name": "Checked suitcase clothing set",
+        "category": "Clothes",
+        "quantity": 5,
+        "reason": "Bulkier items can go in checked baggage without cabin limits.",
+        "essential": true
+      },
+      {
+        "name": "Full-size shampoo bottle",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "Large liquid containers are better suited to checked baggage.",
+        "essential": false
+      },
+      {
+        "name": "Personal item backpack",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Keep essentials in the cabin while main luggage is checked.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [
+      "Demo rule: checked baggage is commonly limited to about 23 kg per piece, subject to airline policy.",
+      "Demo rule: larger liquid containers are generally more suitable for checked baggage, subject to weight and spill-safe packaging."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "cabin_and_checked": {
+    "destination": "Tokyo",
+    "start_date": "2026-10-05",
+    "end_date": "2026-10-12",
+    "weather_summary": {
+      "location": "Tokyo, Japan",
+      "overview": "Mild autumn weather with comfortable daytime temperatures.",
+      "min_temperature": "14°C",
+      "max_temperature": "22°C",
+      "conditions": "Clear and dry"
+    },
+    "packing_items": [
+      {
+        "name": "Cabin bag essentials pouch",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Keep documents and valuables in cabin baggage.",
+        "essential": true
+      },
+      {
+        "name": "Checked luggage clothing",
+        "category": "Clothes",
+        "quantity": 7,
+        "reason": "Main wardrobe packed in checked baggage for a longer stay.",
+        "essential": true
+      },
+      {
+        "name": "100 ml travel liquids kit",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "Cabin liquids must stay within the 100 ml limit.",
+        "essential": true
+      }
+    ],
+    "warnings": ["Split items between cabin and checked bags according to airline rules."],
+    "baggage_warnings": [
+      "Demo rule: cabin baggage is typically limited to about 8 kg and must fit in the overhead bin or under the seat.",
+      "Demo rule: checked baggage is commonly limited to about 23 kg per piece, subject to airline policy.",
+      "Demo rule: liquids in cabin baggage must be in containers of 100 ml or less, all fitting in one transparent resealable bag (max 1 L)."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "external_battery": {
+    "destination": "Dubai",
+    "start_date": "2026-02-01",
+    "end_date": "2026-02-05",
+    "weather_summary": {
+      "location": "Dubai, UAE",
+      "overview": "Warm winter sun with hot daytime temperatures.",
+      "min_temperature": "18°C",
+      "max_temperature": "28°C",
+      "conditions": "Clear skies"
+    },
+    "packing_items": [
+      {
+        "name": "Power bank 10000 mAh",
+        "category": "Electronics",
+        "quantity": 1,
+        "reason": "Keep phones charged during long sightseeing days.",
+        "essential": true
+      },
+      {
+        "name": "USB-C charging cables",
+        "category": "Electronics",
+        "quantity": 2,
+        "reason": "Charge multiple devices from the power bank.",
+        "essential": true
+      },
+      {
+        "name": "Light summer clothing",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Warm sunny weather throughout the stay.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [
+      "Demo rule: spare lithium batteries and power banks must normally be carried in cabin baggage, not checked baggage.",
+      "Demo rule: power banks above typical airline watt-hour limits may be refused; check your carrier's limit."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "liquid_over_100ml": {
+    "destination": "Madrid",
+    "start_date": "2026-06-01",
+    "end_date": "2026-06-04",
+    "weather_summary": {
+      "location": "Madrid, Spain",
+      "overview": "Hot early-summer weather with dry afternoons.",
+      "min_temperature": "18°C",
+      "max_temperature": "32°C",
+      "conditions": "Sunny"
+    },
+    "packing_items": [
+      {
+        "name": "250 ml body lotion",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "Full-size toiletry for the hotel stay.",
+        "essential": false
+      },
+      {
+        "name": "100 ml sunscreen",
+        "category": "Toiletries",
+        "quantity": 1,
+        "reason": "Cabin-compliant size for carry-on liquids.",
+        "essential": true
+      },
+      {
+        "name": "Summer T-shirts",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Light clothing for hot weather.",
+        "essential": true
+      }
+    ],
+    "warnings": ["Review liquid sizes before packing cabin baggage."],
+    "baggage_warnings": [
+      "Demo rule: liquid containers above 100 ml are generally not permitted in cabin baggage unless medically required and documented.",
+      "Demo rule: liquids in cabin baggage must be in containers of 100 ml or less, all fitting in one transparent resealable bag (max 1 L)."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "sharp_object": {
+    "destination": "Geneva",
+    "start_date": "2026-08-01",
+    "end_date": "2026-08-04",
+    "weather_summary": {
+      "location": "Geneva, Switzerland",
+      "overview": "Pleasant summer lake weather with mild evenings.",
+      "min_temperature": "14°C",
+      "max_temperature": "26°C",
+      "conditions": "Mostly clear"
+    },
+    "packing_items": [
+      {
+        "name": "Camping pocket knife",
+        "category": "Tools",
+        "quantity": 1,
+        "reason": "Useful for picnic prep during outdoor meals.",
+        "essential": false
+      },
+      {
+        "name": "Casual summer outfit",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Comfortable clothing for lakeside walks.",
+        "essential": true
+      },
+      {
+        "name": "Daypack",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Carry essentials while exploring the city.",
+        "essential": true
+      }
+    ],
+    "warnings": ["Verify sharp item placement with your airline before departure."],
+    "baggage_warnings": [
+      "Demo rule: sharp objects such as knives, large scissors, or razor blades are usually prohibited in cabin baggage and should be placed in checked baggage if allowed."
+    ],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "medication_privacy": {
+    "destination": "Brussels",
+    "start_date": "2026-07-01",
+    "end_date": "2026-07-04",
+    "weather_summary": {
+      "location": "Brussels, Belgium",
+      "overview": "Mild summer weather with occasional showers.",
+      "min_temperature": "14°C",
+      "max_temperature": "23°C",
+      "conditions": "Partly cloudy"
+    },
+    "packing_items": [
+      {
+        "name": "Prescription medication pouch",
+        "category": "Medical",
+        "quantity": 1,
+        "reason": "Keep essential medicines accessible in cabin baggage.",
+        "essential": true
+      },
+      {
+        "name": "Light rain jacket",
+        "category": "Clothes",
+        "quantity": 1,
+        "reason": "Showers are possible during the trip.",
+        "essential": true
+      },
+      {
+        "name": "Comfortable walking shoes",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "City exploration on foot.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [
+      "Demo rule: essential medications should be kept in cabin baggage with supporting documentation when required."
+    ],
+    "profile_considerations": [
+      "Verify medication transport and storage requirements before departure."
+    ],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "profile_absent": {
+    "destination": "Prague",
+    "start_date": "2026-05-20",
+    "end_date": "2026-05-23",
+    "weather_summary": {
+      "location": "Prague, Czech Republic",
+      "overview": "Pleasant late-spring weather for city sightseeing.",
+      "min_temperature": "10°C",
+      "max_temperature": "20°C",
+      "conditions": "Mostly sunny"
+    },
+    "packing_items": [
+      {
+        "name": "Comfortable walking shoes",
+        "category": "Footwear",
+        "quantity": 1,
+        "reason": "Cobblestone streets require supportive footwear.",
+        "essential": true
+      },
+      {
+        "name": "Layered clothing",
+        "category": "Clothes",
+        "quantity": 3,
+        "reason": "Variable spring temperatures throughout the day.",
+        "essential": true
+      },
+      {
+        "name": "Universal travel adapter",
+        "category": "Electronics",
+        "quantity": 1,
+        "reason": "Power outlets differ from many home countries.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": [],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  },
+  "sensitive_notes": {
+    "destination": "Singapore",
+    "start_date": "2026-08-20",
+    "end_date": "2026-08-24",
+    "weather_summary": {
+      "location": "Singapore",
+      "overview": "Hot and humid tropical weather with brief rain bursts.",
+      "min_temperature": "25°C",
+      "max_temperature": "32°C",
+      "conditions": "Humid with afternoon showers"
+    },
+    "packing_items": [
+      {
+        "name": "Breathable clothing",
+        "category": "Clothes",
+        "quantity": 4,
+        "reason": "High humidity requires light fabrics.",
+        "essential": true
+      },
+      {
+        "name": "Compact umbrella",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Short tropical rain showers are frequent.",
+        "essential": true
+      },
+      {
+        "name": "Travel documents folder",
+        "category": "Accessories",
+        "quantity": 1,
+        "reason": "Keep boarding passes and confirmations organized.",
+        "essential": true
+      }
+    ],
+    "warnings": [],
+    "baggage_warnings": [],
+    "profile_considerations": [
+      "Verify accessibility and mobility assistance requirements with the airline."
+    ],
+    "rules_disclaimer": "DEMONSTRATION RULES ONLY. These are generic examples for Packmate v2.",
+    "language": "en"
+  }
+}
