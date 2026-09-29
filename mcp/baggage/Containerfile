@@ -1,0 +1,24 @@
+FROM registry.access.redhat.com/ubi9/python-312:latest
+
+WORKDIR /app
+
+USER root
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src/ ./src/
+COPY data/ ./data/
+
+ENV PYTHONPATH=/app/src
+ENV PYTHONUNBUFFERED=1
+
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app && \
+    chmod -R g+rwX /tmp
+
+EXPOSE 8080
+
+USER 1001
+
+CMD ["uvicorn", "baggage_policy_mcp.app:app", "--host", "0.0.0.0", "--port", "8080"]

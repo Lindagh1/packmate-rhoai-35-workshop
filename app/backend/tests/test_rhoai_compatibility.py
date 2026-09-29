@@ -1,4 +1,4 @@
-"""Compatibility tests for RHOAI 3.4 MCP SDK and json-repair pins."""
+"""Compatibility tests for the validated RHOAI 3.5 workshop pins."""
 
 from __future__ import annotations
 
@@ -12,9 +12,9 @@ import pytest
 
 def test_mcp_version_is_rhoai_supported() -> None:
     version = pkg_version("mcp")
-    assert re.match(r"^1\.", version), f"MCP major must be 1.x for RHOAI 3.4, got {version}"
+    assert re.match(r"^1\.", version), f"MCP major must be 1.x for the RHOAI 3.5 workshop, got {version}"
     assert not version.startswith("2."), f"MCP 2.x is incompatible with Packmate lab pin ({version})"
-    assert version == "1.27.2", f"expected mcp==1.27.2, got {version}"
+    assert version == "1.28.1", f"expected mcp==1.28.1, got {version}"
 
 
 def test_mcp_streamable_http_client_symbol() -> None:
@@ -41,7 +41,7 @@ def test_packmate_mcp_client_imports_supported_symbol() -> None:
 
 def test_json_repair_version_is_rhoai_supported() -> None:
     version = pkg_version("json-repair")
-    assert version == "0.25.3", f"expected json-repair==0.25.3, got {version}"
+    assert version == "0.60.1", f"expected json-repair==0.60.1, got {version}"
 
 
 def test_json_repair_loads_api_compatible() -> None:

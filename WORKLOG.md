@@ -3,7 +3,7 @@
 ## Status
 
 - Date: 2026-09-29
-- New workshop repo: `packmate-rhoai-34-workshop` (to be renamed for 3.5 target)
+- New workshop repo: `packmate-rhoai-35-workshop`
 - Reference repo inspected: `https://github.com/Lindagh1/packmate-agent`
 - OpenShift authentication: active with provided sandbox token
 - GitHub authentication: available as `Lindagh1`
@@ -83,7 +83,7 @@ The new workshop will reuse the strongest existing components while removing par
 
 Source consulted:
 
-- Red Hat OpenShift AI Self-Managed 3.4 documentation:
+- Historical 3.4-era documentation checked only for wording drift:
   `Experimenting with models in the gen AI playground`
 - Red Hat OpenShift AI Self-Managed 3.5 documentation:
   - `Experimenting with models in the gen AI playground`
@@ -91,11 +91,11 @@ Source consulted:
   - `Build AI/Agentic Applications with OGX`
   - `Release notes -> Technology Preview features`
 
-Verified documentation points carried forward from 3.4 and re-checked for 3.5:
+Verified documentation points re-checked for the live 3.5 target:
 
-- OpenShift AI 3.4 uses the navigation label:
+- The older docs and the live UI both use the navigation label:
   `Gen AI studio -> Playground`
-- OpenShift AI 3.4 also uses:
+- The older docs and the live UI both use:
   `Gen AI studio -> AI asset endpoints`
 - MCP servers for the Playground are platform-configured by a cluster-level `ConfigMap` named:
   `gen-ai-aa-mcp-servers`
@@ -407,3 +407,69 @@ so RAG is not pre-provisioned for participants.
 3. Validate RAG in the live Playground and keep it optional if it requires extra
    infrastructure or proves unreliable.
 4. Build docs and screenshots against the actual 3.5.1 UI.
+
+## Phase 2 - Implementation and validation
+
+### Workshop automation status
+
+- Added `Makefile` targets for:
+  - `preflight`
+  - `prepare-workshop`
+  - `verify-workshop`
+  - `diagnose`
+  - `reset-participant`
+  - `cleanup`
+- Added live-cluster automation under `scripts/`.
+- `make preflight` passes against the current live sandbox.
+- `make prepare-workshop` now:
+  - builds and deploys the frontend, backend, Weather MCP, and Baggage Policy MCP
+  - writes workshop metadata into `packmate-lab`
+  - registers both MCP servers into `ConfigMap/gen-ai-aa-mcp-servers`
+  - creates edge-terminated TLS routes so Playground and participants can use
+    HTTPS endpoints directly
+
+### Verification status
+
+- `make test` passes:
+  - backend: `132 passed`
+  - weather MCP: `6 passed`
+  - baggage MCP: `9 passed`
+- `make verify-workshop` now passes every automated check except screenshots.
+- Verified live checks now include:
+  - shared model endpoint reachability from the deployed backend pod
+  - HTTPS reachability for the Packmate frontend route
+  - HTTPS reachability for both MCP routes
+  - in-cluster Python smoke calls for the model and Packmate app
+  - public Packmate SSE route smoke test
+  - deterministic evaluator execution from inside the backend container image
+
+### Live behavior adjustments
+
+- The Packmate frontend route now uses edge TLS plus a longer router timeout.
+- Public synchronous `/api/v1/chat` calls can still be slower than ideal for a
+  browser curl smoke test, but the participant-facing streaming path works and is
+  the validated route behavior.
+- The deterministic evaluator is now treated as the default beginner exercise.
+- The optional live evaluator path now uses the SSE endpoint instead of the
+  synchronous endpoint.
+
+### Security and dependency scan
+
+- Tightened the repository secret scan to reduce false positives while still
+  failing on obvious credential patterns.
+- Ran `pip-audit` after upgrading inherited 3.4-era pins.
+- Updated validated Python dependency pins to:
+  - `mcp==1.28.1`
+  - `json-repair==0.60.1`
+- Rebuilt the deployed backend and MCP images after the dependency updates.
+- Current Python dependency audit result:
+  - backend: no known vulnerabilities
+  - weather MCP: no known vulnerabilities
+  - baggage MCP: no known vulnerabilities
+
+### Remaining blocker
+
+- Real screenshots and a full browser-based beginner rehearsal remain blocked by
+  browser-side authentication to the OpenShift AI web UI.
+- CLI-side preparation, deployment, MCP registration, model access, Packmate
+  route validation, and deterministic evaluation are all completed.
