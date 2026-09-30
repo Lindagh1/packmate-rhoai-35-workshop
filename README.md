@@ -18,7 +18,7 @@ This workshop teaches a simple AI builder journey:
 5. Add MCP tools for weather and baggage guidance
 6. Call the same model from Python
 7. Use the integrated Packmate application
-8. Run a deterministic AI application regression evaluation
+8. Run a deterministic AI application regression evaluation from OpenShift AI Pipelines
 9. Understand the validated sandbox architecture
 
 The workshop intentionally does **not** make participants install operators, deploy another LLM, manage GPUs, use Tekton, or perform GitOps tasks in the main hands-on path.
@@ -97,4 +97,5 @@ make workshop-ready
 - Instructor guide: `workshop/INSTRUCTOR_GUIDE.md`
 - Architecture: `workshop/ARCHITECTURE.md`
 - Troubleshooting: `workshop/TROUBLESHOOTING.md`
+- Pipelines assets: `pipelines/`
 - Old vs new redesign: `docs/OLD_VS_NEW_WORKSHOP.md`

@@ -157,6 +157,7 @@ else
 fi
 
 [[ -f "${ROOT}/workshop/PARTICIPANT_GUIDE.md" && -f "${ROOT}/workshop/INSTRUCTOR_GUIDE.md" && -f "${ROOT}/workshop/ARCHITECTURE.md" && -f "${ROOT}/workshop/TROUBLESHOOTING.md" ]] && pass "Documentation" || fail "Documentation"
+[[ -f "${ROOT}/pipelines/packmate-evaluation.pipeline.yaml" && -f "${ROOT}/pipelines/packmate_evaluation_pipeline.py" ]] && pass "Pipeline assets" || fail "Pipeline assets"
 if compgen -G "${ROOT}/workshop/images/*.png" >/dev/null; then
   pass "Screenshots"
 else

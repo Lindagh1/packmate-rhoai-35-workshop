@@ -398,6 +398,13 @@ The answer is:
 - the repository shows you where the frontend, backend, prompts, and MCP servers live
 - the application code shows how the same idea becomes a repeatable product
 
+What you should understand in this module:
+
+- the Packmate web application is already deployed in the cluster
+- you are not starting the production workshop app locally from your laptop
+- Code Server is where you inspect, learn, and run focused examples
+- the deployed app and the code repository represent the same architecture
+
 If you want to inspect the code path, look at:
 
 - `app/backend/app/main.py`
@@ -429,6 +436,9 @@ Also inspect these files if you want to understand the runtime path:
 
 - `app/backend/app/agent/ogx_service.py`
 - `app/backend/app/agent/prompts.py`
+- `mcp/weather/src/weather_mcp/app.py`
+- `mcp/baggage/src/baggage_policy_mcp/app.py`
+- `scripts/prepare-workshop.sh`
 - `examples/01_call_model.py`
 - `examples/02_packmate_with_tools.py`
 
@@ -476,9 +486,18 @@ If you want to explain the coding mechanism simply:
 - `app/backend` is the application API
 - `app/backend/app/agent/ogx_service.py` is where the OGX-backed AI logic lives
 - `mcp/weather` and `mcp/baggage` are the tool servers
+- `scripts/prepare-workshop.sh` is where the workshop automation discovers the OGX service endpoint and injects it into the backend configuration
 - `examples/01_call_model.py` shows a simple model call
 - `examples/02_packmate_with_tools.py` shows the application path
-- `examples/03_evaluate_packmate.py` shows regression evaluation
+- `pipelines/packmate-evaluation.pipeline.yaml` is the project pipeline definition used for evaluation
+
+How the MCP servers were built for the workshop:
+
+- each MCP server is implemented as a small FastMCP HTTP service
+- the Weather MCP server exposes weather tools
+- the Baggage MCP server exposes deterministic baggage-rule tools
+- `make prepare-workshop` builds and deploys those services into `packmate-lab`
+- the backend does not hardcode tool answers; it reaches them through OGX
 
 **CHECKPOINT**
 
@@ -530,6 +549,12 @@ This is the final beginner connection to make:
 - the user does not need to know MCP or OGX internals
 - the AI developer does need to understand how those layers connect
 
+Important:
+
+- the app you opened is the deployed in-cluster workshop application
+- you are not launching the main Packmate web app locally in this module
+- the local repository helps you understand the mechanism behind the deployed app
+
 **CHECKPOINT**
 
 - [ ] I opened the application
@@ -543,11 +568,11 @@ Ask the instructor to run `make diagnose`.
 
 **WHAT YOU WILL DO**
 
-Run the deterministic Packmate regression evaluation.
+Run the deterministic Packmate regression evaluation from OpenShift AI Pipelines.
 
 **WHY THIS MATTERS**
 
-Evaluation helps you detect regressions in application behavior.
+Evaluation helps you detect regressions in application behavior and turn the workshop check into a repeatable project workflow.
 
 **TIME**
 
@@ -555,7 +580,15 @@ Evaluation helps you detect regressions in application behavior.
 
 **STEP-BY-STEP INSTRUCTIONS**
 
-1. In the Workbench terminal, run:
+1. In Code Server, open `pipelines/packmate-evaluation.pipeline.yaml`.
+2. Download that YAML file from Code Server to your machine.
+3. In OpenShift AI, return to the `packmate-lab` project.
+4. Open the **Pipelines** tab.
+5. Upload `pipelines/packmate-evaluation.pipeline.yaml`.
+6. Create a pipeline run with the default parameters.
+7. Wait for the run to complete.
+8. Open the run details and inspect the logs or report output.
+9. Optionally, in the Code Server terminal, inspect the equivalent local script:
 
 ```bash
 python examples/03_evaluate_packmate.py
@@ -571,19 +604,28 @@ You get a PASS/FAIL score for the deterministic workshop regression checks.
 
 **WHAT JUST HAPPENED?**
 
-This is an AI application regression evaluation. It is not a claim that the model is universally accurate.
+The pipeline executed the workshop evaluation as a project artifact instead of a one-off terminal command.
+
+This is useful because:
+
+- a project pipeline is easier to rerun
+- the result is attached to a named pipeline run
+- it is closer to how teams operationalize evaluations over time
+
+The underlying evaluation logic is still the same Packmate regression check. It is not a claim that the model is universally accurate.
 
 **CHECKPOINT**
 
-- [ ] I ran the evaluation
+- [ ] I uploaded the pipeline YAML
+- [ ] I ran the evaluation pipeline
 - [ ] I understand why this is not a universal accuracy score
 
 **IF IT DOESN'T WORK**
 
-For the optional live route-based evaluation, ask the instructor for the Packmate Route and run:
+For local troubleshooting, you can still run the equivalent script in Code Server:
 
 ```bash
-python examples/03_evaluate_packmate.py --mode live --base-url https://<your-packmate-route>
+python examples/03_evaluate_packmate.py
 ```
 
 ## Module 8 - Understand the architecture

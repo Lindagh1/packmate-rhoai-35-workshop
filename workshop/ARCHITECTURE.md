@@ -21,15 +21,15 @@ They reuse a shared model that already exists in the sandbox and learn how OpenS
 
 ```mermaid
 flowchart TD
-  A[Open OpenShift AI] --> B[Create or open project]
-  B --> C[Create or open Workbench]
+  A[Open OpenShift AI] --> B[Create project]
+  B --> C[Create Workbench]
   C --> D[Create or open model endpoint view]
   D --> E[Use Gen AI Playground]
   E --> F[Add system instructions]
   F --> G[Enable MCP tools]
   G --> H[Run Python example]
   H --> I[Open Packmate application]
-  I --> J[Run evaluation]
+  I --> J[Run evaluation pipeline]
 ```
 
 ## Actual serving architecture
@@ -138,6 +138,19 @@ flowchart LR
 - `mcp/baggage`: Baggage Policy MCP server
 - `examples/01_call_model.py`: simple shared-model call
 - `examples/02_packmate_with_tools.py`: call the deployed Packmate API
+- `pipelines/packmate-evaluation.pipeline.yaml`: pipeline definition uploaded in the project Pipelines UI
+
+## Application runtime note
+
+The main Packmate web application is not launched locally by the participant in
+the beginner path.
+
+Instead:
+
+- the application is already deployed in `packmate-lab`
+- the participant opens the Route
+- Code Server is used to inspect code and run focused examples
+- OpenShift AI Pipelines is used for the workshop evaluation flow
 
 ## Support-status note
 

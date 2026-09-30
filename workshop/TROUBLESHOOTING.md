@@ -207,7 +207,8 @@ make diagnose
 
 **SYMPTOM**
 
-`python examples/03_evaluate_packmate.py` or `python examples/03_evaluate_packmate.py --mode live --base-url ...` reports `FAIL`.
+The evaluation pipeline run fails in the project **Pipelines** UI, or the
+report shows `FAIL`.
 
 **WHAT IT MEANS**
 
@@ -215,7 +216,12 @@ The deployed Packmate application regressed against the workshop checks.
 
 **HOW TO CHECK**
 
-Review the evaluation output and inspect the application response for the failed scenarios.
+Review:
+
+- the pipeline task logs
+- the generated report artifact
+- the application response for the failed scenarios
+- whether the uploaded YAML matches `pipelines/packmate-evaluation.pipeline.yaml`
 
 **RECOVERY**
 
@@ -225,6 +231,40 @@ Check:
 - MCP server availability
 - backend logs
 - recent application changes
+
+For local debugging, you can still run the equivalent script in Code Server:
+
+```bash
+python examples/03_evaluate_packmate.py
+```
+
+## The pipeline YAML cannot be uploaded
+
+**SYMPTOM**
+
+The participant cannot import `pipelines/packmate-evaluation.pipeline.yaml` in
+the project **Pipelines** tab.
+
+**WHAT IT MEANS**
+
+The file was not downloaded correctly from Code Server, or the project pipeline
+UI is not ready.
+
+**HOW TO CHECK**
+
+- confirm the file exists in the repo clone
+- confirm the **Pipelines** tab is available in the project
+- retry the upload with the compiled YAML file, not the Python source
+
+**RECOVERY**
+
+Use:
+
+- `pipelines/packmate-evaluation.pipeline.yaml`
+
+Do not upload:
+
+- `pipelines/packmate_evaluation_pipeline.py`
 
 ## Authentication expired
 

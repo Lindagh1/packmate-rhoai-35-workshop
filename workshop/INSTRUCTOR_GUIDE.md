@@ -84,6 +84,17 @@ This workshop is validated on a dedicated sandbox-style cluster, so the default 
 
 - `Code Server | Data Science | CPU | Python 3.12`
 
+## Evaluation path
+
+The participant-facing evaluation path now uses OpenShift AI Pipelines.
+
+Use:
+
+- `pipelines/packmate-evaluation.pipeline.yaml`
+
+The pipeline downloads the published repository archive, installs the backend
+evaluation dependencies, and runs the deterministic Packmate evaluation.
+
 ## MCP preparation
 
 The live `3.5` participant path uses the documented Playground MCP registration mechanism:
@@ -131,6 +142,7 @@ Verify:
 - [ ] Weather MCP works
 - [ ] Baggage MCP works
 - [ ] Packmate Route works
+- [ ] evaluation pipeline YAML is present in the repository
 - [ ] evaluation passes
 - [ ] screenshots/documentation match UI
 - [ ] no participant resource conflict
@@ -144,6 +156,7 @@ Verify:
 - route not reachable
 - build failed in `packmate-lab`
 - custom endpoint entry wrong in the UI
+- participant cannot upload or run the pipeline in the project
 
 See `workshop/TROUBLESHOOTING.md` for recovery guidance.
 

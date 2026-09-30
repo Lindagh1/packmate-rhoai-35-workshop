@@ -1,0 +1,106 @@
+# PIPELINE DEFINITION
+# Name: packmate-workshop-evaluation
+# Description: Run the deterministic Packmate workshop evaluation and store a JSON report.
+# Inputs:
+#    repo_zip_url: str [Default: 'https://github.com/Lindagh1/packmate-rhoai-35-workshop/archive/refs/heads/main.zip']
+#    threshold: float [Default: 0.9]
+components:
+  comp-run-packmate-workshop-evaluation:
+    executorLabel: exec-run-packmate-workshop-evaluation
+    inputDefinitions:
+      parameters:
+        repo_zip_url:
+          defaultValue: https://github.com/Lindagh1/packmate-rhoai-35-workshop/archive/refs/heads/main.zip
+          isOptional: true
+          parameterType: STRING
+        threshold:
+          defaultValue: 0.9
+          isOptional: true
+          parameterType: NUMBER_DOUBLE
+    outputDefinitions:
+      parameters:
+        report_path:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-run-packmate-workshop-evaluation:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - run_packmate_workshop_evaluation
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.17.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef run_packmate_workshop_evaluation(\n    report_path: dsl.OutputPath(str),\n\
+          \    threshold: float = 0.90,\n    repo_zip_url: str = \"https://github.com/Lindagh1/packmate-rhoai-35-workshop/archive/refs/heads/main.zip\"\
+          ,\n) -> None:\n    import os\n    import shutil\n    import subprocess\n\
+          \    import sys\n    import tempfile\n    import urllib.request\n    import\
+          \ zipfile\n    from pathlib import Path\n\n    workspace = Path(tempfile.mkdtemp(prefix=\"\
+          packmate-eval-\"))\n    archive_path = workspace / \"repo.zip\"\n    extract_root\
+          \ = workspace / \"repo\"\n\n    urllib.request.urlretrieve(repo_zip_url,\
+          \ archive_path)\n\n    with zipfile.ZipFile(archive_path) as zip_file:\n\
+          \        zip_file.extractall(extract_root)\n\n    extracted_dirs = [path\
+          \ for path in extract_root.iterdir() if path.is_dir()]\n    if not extracted_dirs:\n\
+          \        raise RuntimeError(\"The repository archive did not contain a source\
+          \ directory\")\n    repo_root = extracted_dirs[0]\n    backend_root = repo_root\
+          \ / \"app\" / \"backend\"\n\n    subprocess.run(\n        [sys.executable,\
+          \ \"-m\", \"pip\", \"install\", \"-r\", str(backend_root / \"requirements.txt\"\
+          )],\n        check=True,\n    )\n\n    env = os.environ.copy()\n    env[\"\
+          PYTHONPATH\"] = str(backend_root)\n\n    subprocess.run(\n        [\n  \
+          \          sys.executable,\n            \"evals/runner.py\",\n         \
+          \   \"--mode\",\n            \"deterministic\",\n            \"--threshold\"\
+          ,\n            str(threshold),\n            \"--report-json\",\n       \
+          \     report_path,\n        ],\n        cwd=backend_root,\n        env=env,\n\
+          \        check=True,\n    )\n\n    shutil.rmtree(workspace, ignore_errors=True)\n\
+          \n"
+        image: python:3.12-slim
+pipelineInfo:
+  description: Run the deterministic Packmate workshop evaluation and store a JSON
+    report.
+  name: packmate-workshop-evaluation
+root:
+  dag:
+    tasks:
+      run-packmate-workshop-evaluation:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-run-packmate-workshop-evaluation
+        inputs:
+          parameters:
+            repo_zip_url:
+              componentInputParameter: repo_zip_url
+            threshold:
+              componentInputParameter: threshold
+        taskInfo:
+          name: run-packmate-workshop-evaluation
+  inputDefinitions:
+    parameters:
+      repo_zip_url:
+        defaultValue: https://github.com/Lindagh1/packmate-rhoai-35-workshop/archive/refs/heads/main.zip
+        isOptional: true
+        parameterType: STRING
+      threshold:
+        defaultValue: 0.9
+        isOptional: true
+        parameterType: NUMBER_DOUBLE
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.17.0
