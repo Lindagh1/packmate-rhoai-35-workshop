@@ -1,5 +1,16 @@
 # Participant Guide
 
+## How to use this guide
+
+This guide is written for a data scientist or AI developer who may be using
+OpenShift AI for the first time.
+
+For each module, focus on three questions:
+
+1. Where do I click?
+2. What does this screen or action mean?
+3. How does this connect to the final application?
+
 ## Module 0 - Meet Packmate
 
 **WHAT YOU WILL DO**
@@ -34,6 +45,16 @@ You understand the workshop goal.
 **WHAT JUST HAPPENED?**
 
 Packmate is the story that connects Playground, Python, MCP, and the final application.
+
+As a first-time OpenShift AI user, this matters because the platform can feel
+like many separate menus at first. The workshop gives you one continuous thread:
+
+- OpenShift AI gives you a project and a workbench
+- the platform team has already prepared a shared model
+- Playground helps you prototype
+- MCP adds live tools
+- Code Server helps you inspect the actual application
+- the Packmate app shows the same idea in a user-facing product
 
 **CHECKPOINT**
 
@@ -82,6 +103,15 @@ The Code Server Workbench opens successfully.
 **WHAT JUST HAPPENED?**
 
 You created the browser-based development environment where you will clone the repo and run Python code without needing local tools.
+
+If you are new to OpenShift AI, the key idea is:
+
+- a **project** is your working space
+- a **workbench** is your interactive development environment
+- **Code Server** gives you an in-browser editor and terminal
+
+In other words, this is the place where the data scientist writes or inspects
+application code, not just experiments in a chat UI.
 
 **CHECKPOINT**
 
@@ -133,6 +163,14 @@ You see a model response in the terminal.
 
 You reused the shared OpenShift AI model endpoint without deploying another model.
 
+This is an important platform habit to learn:
+
+- you do not always deploy your own model
+- sometimes the platform team exposes a shared model for many users
+- as a data scientist, you mainly need to know where to find it and how to call it
+
+In this workshop, `my-first-model` is the project that exposes the shared model.
+
 **CHECKPOINT**
 
 - [ ] I can find `llama-32-3b-instruct`
@@ -181,6 +219,15 @@ The second answer behaves more like Packmate.
 **WHAT JUST HAPPENED?**
 
 System instructions changed how the assistant behaves without retraining the model.
+
+This is one of the most important beginner lessons:
+
+- the **model** stayed the same
+- the **system prompt** changed the behavior
+- this is often the first step before writing application code
+
+Playground is useful because it lets you learn prompt behavior quickly before
+you commit anything to the application.
 
 **CHECKPOINT**
 
@@ -246,6 +293,16 @@ MCP stands for Model Context Protocol. In this workshop:
 - the tool result is returned to the model
 - the model uses that result in its final answer
 
+When you open the tool details, try to read them like an AI developer:
+
+- what question did I ask?
+- which tool did the model choose?
+- what arguments did it send?
+- what raw result came back?
+- how did the final answer change because of that result?
+
+That is the core mental model of agentic AI in this workshop.
+
 **CHECKPOINT**
 
 - [ ] Weather MCP is enabled
@@ -300,6 +357,17 @@ So the story is:
 - the backend does not call the MCP servers directly in the main runtime path
 - instead, the backend sends one agentic request to OGX
 - OGX reaches the shared model and the MCP servers for you
+
+This is the moment where many first-time users ask:
+
+"If Playground already works, why do I need Code Server?"
+
+The answer is:
+
+- Playground helps you learn and prototype
+- Code Server is where you understand the stack
+- the repository shows you where the frontend, backend, prompts, and MCP servers live
+- the application code shows how the same idea becomes a repeatable product
 
 If you want to inspect the code path, look at:
 
@@ -373,6 +441,16 @@ As a data scientist or AI developer, this is the key mental model:
 - OGX does not replace `KServe` or `vLLM`; it sits in front of them for this workflow
 - the Weather and Baggage MCP servers are still normal tool services that OGX can call
 
+If you want to explain the coding mechanism simply:
+
+- `app/frontend` is the user interface
+- `app/backend` is the application API
+- `app/backend/app/agent/ogx_service.py` is where the OGX-backed AI logic lives
+- `mcp/weather` and `mcp/baggage` are the tool servers
+- `examples/01_call_model.py` shows a simple model call
+- `examples/02_packmate_with_tools.py` shows the application path
+- `examples/03_evaluate_packmate.py` shows regression evaluation
+
 **CHECKPOINT**
 
 - [ ] I can run the model example
@@ -415,6 +493,13 @@ The application returns a structured response.
 **WHAT JUST HAPPENED?**
 
 The frontend called the Packmate backend, and the backend sent an OGX request that used the shared model plus MCP-backed capabilities.
+
+This is the final beginner connection to make:
+
+- in Playground, you manually explore the behavior
+- in the app, the same mechanism is wrapped in a product flow
+- the user does not need to know MCP or OGX internals
+- the AI developer does need to understand how those layers connect
 
 **CHECKPOINT**
 
