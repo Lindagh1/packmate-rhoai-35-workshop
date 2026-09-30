@@ -95,6 +95,10 @@ Use:
 The pipeline downloads the published repository archive, installs the backend
 evaluation dependencies, and runs the deterministic Packmate evaluation.
 
+The instructor preparation now also pre-creates the project pipeline server in
+`packmate-lab`. Participants should not be asked to enter S3 credentials
+manually.
+
 ## MCP preparation
 
 The live `3.5` participant path uses the documented Playground MCP registration mechanism:

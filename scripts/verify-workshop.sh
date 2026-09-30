@@ -50,6 +50,11 @@ printf '==================================\n\n'
 oc get deployment gen-ai-ui -n redhat-ods-applications >/dev/null 2>&1 && pass "Playground" || fail "Playground"
 oc get inferenceservice "${MODEL_NAME}" -n "${MODEL_NAMESPACE}" >/dev/null 2>&1 && pass "Shared Llama" || fail "Shared Llama"
 [[ "$(oc get inferenceservice "${MODEL_NAME}" -n "${MODEL_NAMESPACE}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')" == "True" ]] && pass "Model Ready" || fail "Model Ready"
+if oc get dspa packmate-pipelines -n "${WORKSHOP_NAMESPACE}" >/dev/null 2>&1 && [[ "$(oc get dspa packmate-pipelines -n "${WORKSHOP_NAMESPACE}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')" == "True" ]]; then
+  pass "Pipelines ready"
+else
+  fail "Pipelines ready"
+fi
 
 BACKEND_POD="$(oc -n "${WORKSHOP_NAMESPACE}" get pod -l app=packmate-backend -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
 if [[ -n "${BACKEND_POD}" ]]; then

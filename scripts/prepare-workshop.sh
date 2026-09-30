@@ -29,6 +29,52 @@ OGX_BASE_URL="http://${OGX_SERVER_NAME}-service.${MODEL_NAMESPACE}.svc.cluster.l
 OGX_MODEL_ID="vllm-inference-1/${MODEL_NAME}"
 OGX_WEATHER_MCP_URL="http://weather-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
 OGX_BAGGAGE_MCP_URL="http://baggage-policy-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
+PIPELINE_S3_ACCESS_KEY="packmate-workshop"
+PIPELINE_S3_SECRET_KEY="packmate-workshop-secret"
+
+oc -n "${WORKSHOP_NAMESPACE}" create secret generic packmate-pipelines-s3 \
+  --from-literal=accesskey="${PIPELINE_S3_ACCESS_KEY}" \
+  --from-literal=secretkey="${PIPELINE_S3_SECRET_KEY}" \
+  --dry-run=client -o yaml | oc apply -f -
+oc -n "${WORKSHOP_NAMESPACE}" label secret/packmate-pipelines-s3 \
+  "${APP_LABEL_KEY}=${APP_LABEL_VALUE}" "${MANAGED_LABEL_KEY}=${MANAGED_LABEL_VALUE}" --overwrite >/dev/null
+
+oc apply -f - <<EOF
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
+kind: DataSciencePipelinesApplication
+metadata:
+  name: packmate-pipelines
+  namespace: ${WORKSHOP_NAMESPACE}
+  labels:
+    ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+    ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+spec:
+  dspVersion: v2
+  apiServer:
+    deploy: true
+    enableSamplePipeline: false
+    cacheEnabled: false
+  persistenceAgent:
+    deploy: true
+  scheduledWorkflow:
+    deploy: true
+  mlmd:
+    deploy: true
+  database:
+    mariaDB:
+      deploy: true
+      pvcSize: 5Gi
+  objectStorage:
+    minio:
+      deploy: true
+      image: quay.io/opendatahub/minio:RELEASE.2019-08-14T20-37-41Z-license-compliance
+      bucket: mlpipeline
+      pvcSize: 5Gi
+      s3CredentialsSecret:
+        secretName: packmate-pipelines-s3
+        accessKey: accesskey
+        secretKey: secretkey
+EOF
 
 oc patch ogxserver "${OGX_SERVER_NAME}" -n "${MODEL_NAMESPACE}" --type=merge -p "{
   \"spec\": {

@@ -584,11 +584,12 @@ Evaluation helps you detect regressions in application behavior and turn the wor
 2. Download that YAML file from Code Server to your machine.
 3. In OpenShift AI, return to the `packmate-lab` project.
 4. Open the **Pipelines** tab.
-5. Upload `pipelines/packmate-evaluation.pipeline.yaml`.
-6. Create a pipeline run with the default parameters.
-7. Wait for the run to complete.
-8. Open the run details and inspect the logs or report output.
-9. Optionally, in the Code Server terminal, inspect the equivalent local script:
+5. Confirm that the project pipeline server is already available.
+6. Upload `pipelines/packmate-evaluation.pipeline.yaml`.
+7. Create a pipeline run with the default parameters.
+8. Wait for the run to complete.
+9. Open the run details and inspect the logs or report output.
+10. Optionally, in the Code Server terminal, inspect the equivalent local script:
 
 ```bash
 python examples/03_evaluate_packmate.py
@@ -613,6 +614,11 @@ This is useful because:
 - it is closer to how teams operationalize evaluations over time
 
 The underlying evaluation logic is still the same Packmate regression check. It is not a claim that the model is universally accurate.
+
+Important:
+
+- the instructor automation prepares the project pipeline server for you
+- you should not have to enter S3 or MinIO credentials manually in the participant path
 
 **CHECKPOINT**
 

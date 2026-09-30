@@ -266,6 +266,14 @@ Do not upload:
 
 - `pipelines/packmate_evaluation_pipeline.py`
 
+If the UI still asks the participant to enter S3 credentials manually, the
+project pipeline server was not prepared correctly. Ask the instructor to rerun:
+
+```bash
+make prepare-workshop
+make verify-workshop
+```
+
 ## Authentication expired
 
 **SYMPTOM**
