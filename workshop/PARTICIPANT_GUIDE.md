@@ -11,6 +11,30 @@ For each module, focus on three questions:
 2. What does this screen or action mean?
 3. How does this connect to the final application?
 
+## Your role in this workshop
+
+You are acting as a data scientist or AI developer.
+
+Your job in this workshop is not to administer the OpenShift AI platform.
+Your job is to:
+
+- discover the prepared project, workbench, and shared model
+- prototype behavior in Playground
+- enable prepared MCP tools
+- understand how tool-assisted AI responses work
+- inspect the application code in Code Server
+- connect the UI experience to the backend mechanism
+
+The platform team has already prepared the heavy infrastructure for you:
+
+- the shared model
+- the serving stack
+- OGX
+- the MCP servers
+
+Your learning goal is to understand how to build with those prepared
+capabilities, not how to install them from scratch.
+
 ## Module 0 - Meet Packmate
 
 **WHAT YOU WILL DO**
