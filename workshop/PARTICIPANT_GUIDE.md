@@ -92,7 +92,7 @@ Ask the instructor to confirm that the OpenShift AI dashboard is available.
 
 **WHAT YOU WILL DO**
 
-Create or open the `packmate-lab` project and open a CPU Code Server Workbench.
+Create the `packmate-lab` project and create a CPU Code Server Workbench.
 
 **WHY THIS MATTERS**
 
@@ -105,12 +105,16 @@ The project groups your AI resources. The Code Server Workbench is your browser-
 **STEP-BY-STEP INSTRUCTIONS**
 
 1. In the left navigation, select **Projects**.
-2. Create or open the project `packmate-lab`.
-3. Open the **Workbenches** tab.
-4. Create or open a CPU Workbench by using the image
-   **Code Server | Data Science | CPU | Python 3.12**.
-5. Wait until the Workbench status is **Running**.
-6. Open the Workbench.
+2. Click **Create project**.
+3. Enter the name `packmate-lab`.
+4. Open the new project.
+5. Open the **Workbenches** tab.
+6. Click **Create workbench**.
+7. Choose the image **Code Server | Data Science | CPU | Python 3.12**.
+8. Enter the name `packmate-workbench`.
+9. Create the workbench.
+10. Wait until the Workbench status is **Running**.
+11. Open the Workbench.
 
 **SCREENSHOTS**
 
@@ -139,7 +143,8 @@ application code, not just experiments in a chat UI.
 
 **CHECKPOINT**
 
-- [ ] `packmate-lab` exists
+- [ ] I created `packmate-lab`
+- [ ] I created the Workbench
 - [ ] the Workbench is `Running`
 - [ ] the Workbench opens
 
@@ -405,15 +410,15 @@ If you want to inspect the code path, look at:
 
 **STEP-BY-STEP INSTRUCTIONS**
 
-1. Open the repository in Code Server.
-2. If the repository is not already present, clone it:
+1. Open the terminal in Code Server.
+2. Clone the repository:
 
 ```bash
 git clone https://github.com/Lindagh1/packmate-rhoai-35-workshop.git
 cd packmate-rhoai-35-workshop
 ```
 
-3. In the Code Server file explorer, inspect:
+3. In the Code Server file explorer, open the cloned repository and inspect:
 
 - `app/frontend`
 - `app/backend`
@@ -427,7 +432,7 @@ Also inspect these files if you want to understand the runtime path:
 - `examples/01_call_model.py`
 - `examples/02_packmate_with_tools.py`
 
-4. In the Workbench terminal, run:
+4. In the Code Server terminal, run:
 
 ```bash
 python examples/01_call_model.py
