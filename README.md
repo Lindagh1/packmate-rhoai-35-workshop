@@ -23,6 +23,10 @@ This workshop teaches a simple AI builder journey:
 
 The workshop intentionally does **not** make participants install operators, deploy another LLM, manage GPUs, use Tekton, or perform GitOps tasks in the main hands-on path.
 
+Validated Workbench image:
+
+- `Code Server | Data Science | CPU | Python 3.12`
+
 ## Key constraints
 
 - Targets Red Hat OpenShift AI `3.5.x`
@@ -55,10 +59,10 @@ flowchart TB
   User[Participant] --> WB[Workbench]
   User --> PG[Gen AI Playground]
   WB --> Model[Shared llama-32-3b-instruct endpoint]
-  PG --> Model
-  PG --> MCP[MCP tools]
-  App[Packmate application] --> Model
-  App --> MCP
+  PG --> OGX[OGX runtime]
+  App[Packmate application] --> OGX
+  OGX --> Model
+  OGX --> MCP[MCP tools]
   Model --> KS[KServe]
   KS --> RT[ServingRuntime]
   RT --> VLLM[vLLM]
@@ -69,7 +73,9 @@ flowchart TB
 - Gen AI Playground is a Technology Preview feature in OpenShift AI `3.5`
 - Custom endpoints are a Technology Preview feature in OpenShift AI `3.5`
 - MCP Lifecycle Operator and MCP Catalog are Technology Preview features in OpenShift AI `3.5`
-- OGX is relevant in OpenShift AI `3.5`, but this live sandbox currently validates the hands-on workshop path without enabling OGX
+- OGX is relevant in OpenShift AI `3.5` and is enabled here for the validated Playground and Packmate runtime path
+
+Participants do not administer OGX directly. They consume the prepared Playground, model, and MCP capabilities, while the Packmate backend uses OGX as the standard agentic runtime.
 
 ## Instructor flow
 

@@ -85,6 +85,31 @@ Run:
 make prepare-workshop
 ```
 
+## Playground stays on Loading
+
+**SYMPTOM**
+
+The Playground page opens but never leaves `Loading`.
+
+**WHAT IT MEANS**
+
+In the validated `3.5.1` sandbox, this usually means the required OGX platform plumbing is not enabled or not Ready yet.
+
+**HOW TO CHECK**
+
+```bash
+oc get datasciencecluster
+oc get datasciencecluster <dsc-name> -o jsonpath='{.spec.components.ogx.managementState}{"\n"}'
+oc get datasciencecluster <dsc-name> -o jsonpath='{range .status.conditions[*]}{.type}={.status}{"\n"}{end}'
+oc get pods -n redhat-ods-applications | grep ogx
+```
+
+**RECOVERY**
+
+Run `make preflight` first.
+
+If OGX is not managed or not Ready, apply the supported instructor recovery action documented by the preflight output, then wait for OpenShift AI reconciliation to complete before retesting Playground.
+
 ## Weather MCP or Baggage MCP route fails
 
 **SYMPTOM**
@@ -128,7 +153,7 @@ Check the Workbench details in OpenShift AI and inspect the related pod and PVC 
 
 **RECOVERY**
 
-Wait for storage provisioning. If it does not recover, recreate the Workbench with the validated notebook image.
+Wait for storage provisioning. If it does not recover, recreate the Workbench with the validated `Code Server | Data Science | CPU | Python 3.12` image.
 
 ## The custom endpoint cannot verify
 

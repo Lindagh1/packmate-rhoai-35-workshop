@@ -48,8 +48,14 @@ packmate_detect_openshift_version() {
   oc get clusterversion version -o jsonpath='{.status.desired.version}'
 }
 
+packmate_detect_dsc_name() {
+  oc get datasciencecluster -o jsonpath='{.items[0].metadata.name}'
+}
+
 packmate_detect_rhoai_version() {
-  oc get datasciencecluster default-dsc -n redhat-ods-applications -o jsonpath='{.status.release.version}'
+  local dsc_name
+  dsc_name="$(packmate_detect_dsc_name)"
+  oc get datasciencecluster "${dsc_name}" -o jsonpath='{.status.release.version}'
 }
 
 packmate_assert_rhoai_35() {

@@ -19,6 +19,50 @@ BUILD_TAG="workshop"
 
 packmate_apply_namespace
 
+OGX_SERVER_NAME="$(oc get ogxserver -n "${MODEL_NAMESPACE}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+if [[ -z "${OGX_SERVER_NAME}" ]]; then
+  printf 'ERROR: no OGXServer found in %s\n' "${MODEL_NAMESPACE}" >&2
+  exit 1
+fi
+
+OGX_BASE_URL="http://${OGX_SERVER_NAME}-service.${MODEL_NAMESPACE}.svc.cluster.local:8321/v1"
+OGX_MODEL_ID="vllm-inference-1/${MODEL_NAME}"
+OGX_WEATHER_MCP_URL="http://weather-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
+OGX_BAGGAGE_MCP_URL="http://baggage-policy-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
+
+oc patch ogxserver "${OGX_SERVER_NAME}" -n "${MODEL_NAMESPACE}" --type=merge -p "{
+  \"spec\": {
+    \"network\": {
+      \"port\": 8321,
+      \"policy\": {
+        \"enabled\": true,
+        \"policyTypes\": [\"Ingress\"],
+        \"ingress\": [
+          {
+            \"from\": [
+              {\"podSelector\": {}},
+              {\"namespaceSelector\": {\"matchLabels\": {\"kubernetes.io/metadata.name\": \"redhat-ods-applications\"}}},
+              {\"namespaceSelector\": {\"matchLabels\": {\"network.openshift.io/policy-group\": \"ingress\"}}},
+              {\"namespaceSelector\": {\"matchLabels\": {\"kubernetes.io/metadata.name\": \"${WORKSHOP_NAMESPACE}\"}}}
+            ],
+            \"ports\": [
+              {\"port\": 8321, \"protocol\": \"TCP\"}
+            ]
+          },
+          {
+            \"from\": [
+              {\"namespaceSelector\": {\"matchLabels\": {\"network.openshift.io/policy-group\": \"monitoring\"}}}
+            ],
+            \"ports\": [
+              {\"port\": 9464, \"protocol\": \"TCP\"}
+            ]
+          }
+        ]
+      }
+    }
+  }
+}" >/dev/null
+
 oc apply -f - <<EOF
 apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -146,23 +190,39 @@ oc -n "${WORKSHOP_NAMESPACE}" start-build packmate-frontend --from-dir="${ROOT}/
 oc -n "${WORKSHOP_NAMESPACE}" start-build weather-mcp --from-dir="${ROOT}/mcp/weather" --follow --wait
 oc -n "${WORKSHOP_NAMESPACE}" start-build baggage-policy-mcp --from-dir="${ROOT}/mcp/baggage" --follow --wait
 
-BACKEND_IMAGE="$(oc -n "${WORKSHOP_NAMESPACE}" get istag "packmate-backend:${BUILD_TAG}" -o jsonpath='{.image.dockerImageReference}')"
-FRONTEND_IMAGE="$(oc -n "${WORKSHOP_NAMESPACE}" get istag "packmate-frontend:${BUILD_TAG}" -o jsonpath='{.image.dockerImageReference}')"
-WEATHER_IMAGE="$(oc -n "${WORKSHOP_NAMESPACE}" get istag "weather-mcp:${BUILD_TAG}" -o jsonpath='{.image.dockerImageReference}')"
-BAGGAGE_IMAGE="$(oc -n "${WORKSHOP_NAMESPACE}" get istag "baggage-policy-mcp:${BUILD_TAG}" -o jsonpath='{.image.dockerImageReference}')"
+BACKEND_BUILD_VERSION="$(oc -n "${WORKSHOP_NAMESPACE}" get buildconfig packmate-backend -o jsonpath='{.status.lastVersion}')"
+FRONTEND_BUILD_VERSION="$(oc -n "${WORKSHOP_NAMESPACE}" get buildconfig packmate-frontend -o jsonpath='{.status.lastVersion}')"
+WEATHER_BUILD_VERSION="$(oc -n "${WORKSHOP_NAMESPACE}" get buildconfig weather-mcp -o jsonpath='{.status.lastVersion}')"
+BAGGAGE_BUILD_VERSION="$(oc -n "${WORKSHOP_NAMESPACE}" get buildconfig baggage-policy-mcp -o jsonpath='{.status.lastVersion}')"
+
+BACKEND_REPOSITORY="$(oc -n "${WORKSHOP_NAMESPACE}" get imagestream packmate-backend -o jsonpath='{.status.dockerImageRepository}')"
+FRONTEND_REPOSITORY="$(oc -n "${WORKSHOP_NAMESPACE}" get imagestream packmate-frontend -o jsonpath='{.status.dockerImageRepository}')"
+WEATHER_REPOSITORY="$(oc -n "${WORKSHOP_NAMESPACE}" get imagestream weather-mcp -o jsonpath='{.status.dockerImageRepository}')"
+BAGGAGE_REPOSITORY="$(oc -n "${WORKSHOP_NAMESPACE}" get imagestream baggage-policy-mcp -o jsonpath='{.status.dockerImageRepository}')"
+
+BACKEND_DIGEST="$(oc -n "${WORKSHOP_NAMESPACE}" get build "packmate-backend-${BACKEND_BUILD_VERSION}" -o jsonpath='{.status.output.to.imageDigest}')"
+FRONTEND_DIGEST="$(oc -n "${WORKSHOP_NAMESPACE}" get build "packmate-frontend-${FRONTEND_BUILD_VERSION}" -o jsonpath='{.status.output.to.imageDigest}')"
+WEATHER_DIGEST="$(oc -n "${WORKSHOP_NAMESPACE}" get build "weather-mcp-${WEATHER_BUILD_VERSION}" -o jsonpath='{.status.output.to.imageDigest}')"
+BAGGAGE_DIGEST="$(oc -n "${WORKSHOP_NAMESPACE}" get build "baggage-policy-mcp-${BAGGAGE_BUILD_VERSION}" -o jsonpath='{.status.output.to.imageDigest}')"
+
+BACKEND_IMAGE="${BACKEND_REPOSITORY}@${BACKEND_DIGEST}"
+FRONTEND_IMAGE="${FRONTEND_REPOSITORY}@${FRONTEND_DIGEST}"
+WEATHER_IMAGE="${WEATHER_REPOSITORY}@${WEATHER_DIGEST}"
+BAGGAGE_IMAGE="${BAGGAGE_REPOSITORY}@${BAGGAGE_DIGEST}"
 
 oc -n "${WORKSHOP_NAMESPACE}" create secret generic packmate-llm \
-  --from-literal=BASE_URL="${MODEL_BASE_URL}" \
-  --from-literal=MODEL="${MODEL_NAME}" \
+  --from-literal=BASE_URL="${OGX_BASE_URL}" \
+  --from-literal=MODEL="${OGX_MODEL_ID}" \
   --from-literal=LITELLM_API_KEY="dummy" \
   --dry-run=client -o yaml | oc apply -f -
 oc -n "${WORKSHOP_NAMESPACE}" label secret/packmate-llm \
   "${APP_LABEL_KEY}=${APP_LABEL_VALUE}" "${MANAGED_LABEL_KEY}=${MANAGED_LABEL_VALUE}" --overwrite >/dev/null
 
 oc -n "${WORKSHOP_NAMESPACE}" create configmap packmate-backend-config \
+  --from-literal=PACKMATE_RUNTIME_MODE=ogx \
   --from-literal=PACKMATE_TOOL_MODE=mcp \
-  --from-literal=PACKMATE_WEATHER_MCP_URL=http://weather-mcp:8080/mcp \
-  --from-literal=PACKMATE_BAGGAGE_MCP_URL=http://baggage-policy-mcp:8080/mcp \
+  --from-literal=PACKMATE_WEATHER_MCP_URL="${OGX_WEATHER_MCP_URL}" \
+  --from-literal=PACKMATE_BAGGAGE_MCP_URL="${OGX_BAGGAGE_MCP_URL}" \
   --from-literal=PACKMATE_MCP_TIMEOUT_SECONDS=10 \
   --from-literal=PACKMATE_MCP_MAX_RETRIES=2 \
   --dry-run=client -o yaml | oc apply -f -

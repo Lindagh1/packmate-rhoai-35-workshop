@@ -47,11 +47,11 @@ Ask the instructor to confirm that the OpenShift AI dashboard is available.
 
 **WHAT YOU WILL DO**
 
-Create or open the `packmate-lab` project and open a CPU Workbench.
+Create or open the `packmate-lab` project and open a CPU Code Server Workbench.
 
 **WHY THIS MATTERS**
 
-The project groups your AI resources. The Workbench is your browser-based coding environment.
+The project groups your AI resources. The Code Server Workbench is your browser-based coding environment.
 
 **TIME**
 
@@ -59,10 +59,11 @@ The project groups your AI resources. The Workbench is your browser-based coding
 
 **STEP-BY-STEP INSTRUCTIONS**
 
-1. In the left navigation, select **Data Science Projects**.
+1. In the left navigation, select **Projects**.
 2. Create or open the project `packmate-lab`.
 3. Open the **Workbenches** tab.
-4. Create or open a CPU Workbench by using the validated generic data science image.
+4. Create or open a CPU Workbench by using the image
+   **Code Server | Data Science | CPU | Python 3.12**.
 5. Wait until the Workbench status is **Running**.
 6. Open the Workbench.
 
@@ -76,11 +77,11 @@ The project groups your AI resources. The Workbench is your browser-based coding
 
 **EXPECTED RESULT**
 
-The Workbench opens successfully.
+The Code Server Workbench opens successfully.
 
 **WHAT JUST HAPPENED?**
 
-You created the place where you will run Python code without needing local tools.
+You created the browser-based development environment where you will clone the repo and run Python code without needing local tools.
 
 **CHECKPOINT**
 
@@ -110,7 +111,7 @@ AI developers often reuse a platform-provided model instead of deploying their o
 
 1. In the left navigation, select **Gen AI studio**.
 2. Select **AI asset endpoints**.
-3. In **Project**, choose `my-first-model`.
+3. In **Project**, choose `my-first-model` if it is not already selected.
 4. Confirm that the shared model `llama-32-3b-instruct` is available.
 5. In the Workbench terminal, run:
 
@@ -191,54 +192,11 @@ System instructions changed how the assistant behaves without retraining the mod
 
 Re-open the Playground and confirm the selected project and model.
 
-## Module 4 - Ground the model with RAG
+## Module 4 - Give Packmate tools with MCP
 
 **WHAT YOU WILL DO**
 
-Optionally test Retrieval-Augmented Generation (RAG) with the Packmate baggage policy document.
-
-**WHY THIS MATTERS**
-
-RAG gives the model relevant document context at request time.
-
-**TIME**
-
-15 to 20 minutes if enabled
-
-**STEP-BY-STEP INSTRUCTIONS**
-
-1. Only continue if the instructor confirms that the live sandbox RAG flow is enabled for this workshop.
-2. Open the **Knowledge** tab in Playground.
-3. Upload `workshop/assets/packmate-baggage-policy.pdf`.
-4. Ask a question about a fictional Packmate policy.
-5. Compare the answer before and after the document is available.
-
-**SCREENSHOTS**
-
-![RAG upload](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/11-rag-knowledge-upload.png)
-![RAG answer](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/12-rag-grounded-answer.png)
-
-**EXPECTED RESULT**
-
-If enabled, the model uses the workshop document as context.
-
-**WHAT JUST HAPPENED?**
-
-RAG is not training. The model retrieves relevant text from a document and uses it while answering.
-
-**CHECKPOINT**
-
-- [ ] I understand that RAG is retrieval, not training
-
-**IF IT DOESN'T WORK**
-
-Treat RAG as optional for this sandbox and continue with the next module.
-
-## Module 5 - Give Packmate tools with MCP
-
-**WHAT YOU WILL DO**
-
-Enable the prepared Weather and Baggage Policy MCP servers in Playground.
+Enable the prepared Weather and Baggage Policy MCP servers in Playground and inspect how tool calls work.
 
 **WHY THIS MATTERS**
 
@@ -254,13 +212,17 @@ MCP gives the model live capabilities instead of only static knowledge.
 2. Enable the Packmate Weather MCP server.
 3. Ask:
    `I am travelling to Rome next week. Check the weather and recommend what I should pack.`
-4. Inspect the tool call.
+4. Inspect the tool call details. Notice:
+   - which tool the model selected
+   - which arguments were sent
+   - what the tool returned
 5. Enable the Packmate Baggage Policy MCP server.
 6. Ask:
    `Can I take a 150 ml liquid in cabin baggage?`
 7. Ask:
    `Can I put my power bank in checked baggage?`
 8. Inspect the tool calls.
+9. Optionally disable one MCP server and retry a related question to see how the assistant falls back when a tool is unavailable.
 
 **SCREENSHOTS**
 
@@ -275,27 +237,75 @@ You see the tools being invoked and then used in the final answer.
 
 **WHAT JUST HAPPENED?**
 
-The model chose a tool, the MCP server executed it, and the model used the returned result.
+MCP stands for Model Context Protocol. In this workshop:
+
+- an MCP server exposes one or more tools
+- the Playground sends the model the tool definitions
+- the model decides whether it needs a tool
+- the tool runs outside the model
+- the tool result is returned to the model
+- the model uses that result in its final answer
 
 **CHECKPOINT**
 
 - [ ] Weather MCP is enabled
 - [ ] baggage MCP is enabled
-- [ ] I can explain the difference between MCP and RAG
+- [ ] I can explain what an MCP server and a tool are
+- [ ] I can explain how the model used the tool result
 
 **IF IT DOESN'T WORK**
 
 Ask the instructor to run `make verify-workshop`.
 
-## Module 6 - From Playground to Python
+## Module 5 - From Playground to Code Server and Python
 
 **WHAT YOU WILL DO**
 
-Run the Python examples from the Workbench.
+Open the Packmate repository in Code Server and run the Python examples from the Workbench terminal.
 
 **WHY THIS MATTERS**
 
 This is the bridge from experimentation to application code.
+
+**HOW TO THINK ABOUT THIS STEP**
+
+At this point, you switch from "Playground user" to "AI developer".
+
+In this workshop, Code Server is where you develop and inspect the project:
+
+- `app/frontend` contains the React frontend
+- `app/backend` contains the FastAPI backend
+- `mcp/weather` contains the Weather MCP server
+- `mcp/baggage` contains the Baggage Policy MCP server
+- `examples/01_call_model.py` calls the shared model directly
+- `examples/02_packmate_with_tools.py` calls the deployed Packmate application
+- `examples/03_evaluate_packmate.py` runs the deterministic evaluation
+
+**HOW PACKMATE USES OGX**
+
+This workshop now follows the OpenShift AI `3.5` agentic path more closely:
+
+That means:
+
+- the platform team prepares OGX
+- the shared model is still served by `KServe + ServingRuntime + vLLM`
+- Packmate keeps a simple application stack: `React frontend -> FastAPI backend -> OGX`
+- OGX is the agent runtime that gives the model access to the prepared MCP servers
+- you do **not** create OGX resources in this workshop
+
+So the story is:
+
+- in Playground, you see model + MCP behavior from the OpenShift AI UI
+- in Code Server, you inspect the same idea in application code
+- the backend does not call the MCP servers directly in the main runtime path
+- instead, the backend sends one agentic request to OGX
+- OGX reaches the shared model and the MCP servers for you
+
+If you want to inspect the code path, look at:
+
+- `app/backend/app/main.py`
+- `app/backend/app/agent/runtime.py`
+- `app/backend/app/agent/ogx_service.py`
 
 **TIME**
 
@@ -303,7 +313,29 @@ This is the bridge from experimentation to application code.
 
 **STEP-BY-STEP INSTRUCTIONS**
 
-1. In the Workbench terminal, run:
+1. Open the repository in Code Server.
+2. If the repository is not already present, clone it:
+
+```bash
+git clone https://github.com/Lindagh1/packmate-rhoai-35-workshop.git
+cd packmate-rhoai-35-workshop
+```
+
+3. In the Code Server file explorer, inspect:
+
+- `app/frontend`
+- `app/backend`
+- `mcp/weather`
+- `mcp/baggage`
+
+Also inspect these files if you want to understand the runtime path:
+
+- `app/backend/app/agent/ogx_service.py`
+- `app/backend/app/agent/prompts.py`
+- `examples/01_call_model.py`
+- `examples/02_packmate_with_tools.py`
+
+4. In the Workbench terminal, run:
 
 ```bash
 python examples/01_call_model.py
@@ -316,22 +348,43 @@ python examples/02_packmate_with_tools.py
 
 **EXPECTED RESULT**
 
-The first script calls the shared model. The second script calls the deployed Packmate application.
+The first script calls the shared model directly so that you can see the base model behavior.
+
+The second script calls the deployed Packmate application. Inside the application:
+
+- the React frontend talks to the FastAPI backend
+- the FastAPI backend sends the request to OGX
+- OGX uses the shared model plus the prepared MCP servers
+- the final structured answer comes back to Packmate
 
 **WHAT JUST HAPPENED?**
 
-You moved from UI experimentation to readable Python code.
+You moved from UI experimentation to readable application code.
+
+As a data scientist or AI developer, this is the key mental model:
+
+- Playground helps you prototype prompts and tool behavior
+- Code Server is where you inspect and evolve the application
+- the frontend is a React UI
+- the backend is a FastAPI service
+- the MCP servers are separate tool services
+- the shared model endpoint is reused instead of deployed by the participant
+- the backend uses OGX as the standard agentic runtime path
+- OGX does not replace `KServe` or `vLLM`; it sits in front of them for this workflow
+- the Weather and Baggage MCP servers are still normal tool services that OGX can call
 
 **CHECKPOINT**
 
 - [ ] I can run the model example
 - [ ] I can run the Packmate application example
+- [ ] I can explain where the frontend, backend, and MCP servers live in the repo
+- [ ] I can explain that Packmate uses OGX without requiring the participant to administer OGX
 
 **IF IT DOESN'T WORK**
 
 Verify that the Workbench can reach in-cluster services and that the workshop preparation completed successfully.
 
-## Module 7 - Open the integrated Packmate application
+## Module 6 - Open the integrated Packmate application
 
 **WHAT YOU WILL DO**
 
@@ -361,7 +414,7 @@ The application returns a structured response.
 
 **WHAT JUST HAPPENED?**
 
-The frontend called the Packmate backend, and the backend used the shared model plus MCP-backed capabilities.
+The frontend called the Packmate backend, and the backend sent an OGX request that used the shared model plus MCP-backed capabilities.
 
 **CHECKPOINT**
 
@@ -372,7 +425,7 @@ The frontend called the Packmate backend, and the backend used the shared model 
 
 Ask the instructor to run `make diagnose`.
 
-## Module 8 - Evaluate the application
+## Module 7 - Evaluate the application
 
 **WHAT YOU WILL DO**
 
@@ -419,7 +472,7 @@ For the optional live route-based evaluation, ask the instructor for the Packmat
 python examples/03_evaluate_packmate.py --mode live --base-url https://<your-packmate-route>
 ```
 
-## Module 9 - Understand the architecture
+## Module 8 - Understand the architecture
 
 **WHAT YOU WILL DO**
 
@@ -440,13 +493,13 @@ You should leave the workshop understanding what OpenShift AI provided for you.
 
 **EXPECTED RESULT**
 
-You can explain the role of Workbench, Playground, KServe, vLLM, MCP, and evaluation.
+You can explain the role of Workbench, Playground, OGX, KServe, vLLM, MCP, and evaluation.
 
 **CHECKPOINT**
 
 - [ ] I can explain the high-level architecture
 
-## Module 10 - From prototype to production
+## Module 9 - From prototype to production
 
 **WHAT YOU WILL DO**
 

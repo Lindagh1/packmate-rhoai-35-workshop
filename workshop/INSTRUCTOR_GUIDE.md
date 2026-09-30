@@ -80,6 +80,10 @@ This workshop is validated on a dedicated sandbox-style cluster, so the default 
 
 - `packmate-lab`
 
+## Validated workbench image
+
+- `Code Server | Data Science | CPU | Python 3.12`
+
 ## MCP preparation
 
 The live `3.5` participant path uses the documented Playground MCP registration mechanism:
@@ -91,14 +95,21 @@ The workshop does **not** require the MCP Lifecycle Operator or MCP Catalog.
 
 ## OGX status
 
-OGX is relevant to OpenShift AI `3.5`, but the validated hands-on path in this sandbox does not depend on OGX because the `ogx` component is removed in the live `DataScienceCluster`.
+OGX is enabled in the live `3.5.1` sandbox because the Playground depends on it here.
 
-## RAG status
+Keep the explanation beginner-level:
 
-RAG remains conditional until the live Playground flow is validated during rehearsal.
+- OGX is part of the platform plumbing behind the Gen AI experience
+- the platform team prepares it
+- workshop participants consume the prepared Playground, model, and MCP capabilities
+- the Packmate backend also uses OGX as its primary agentic runtime path
+- participants do **not** create or administer OGX resources in this workshop
 
-If the sandbox RAG flow proves reliable without adding heavy infrastructure, include it.
-Otherwise, keep it conceptual and optional.
+Support-status note for instructors:
+
+- Gen AI Playground: Technology Preview in RHOAI `3.5`
+- custom endpoints: Technology Preview in RHOAI `3.5`
+- OGX remote provider / SDK compatibility used for MCP HTTP streaming: Developer Preview in this workshop architecture
 
 ## 15 minutes before the workshop
 
@@ -115,6 +126,7 @@ Verify:
 - [ ] shared model Ready
 - [ ] model endpoint works
 - [ ] Playground available
+- [ ] Playground exits `Loading`
 - [ ] Workbench image available
 - [ ] Weather MCP works
 - [ ] Baggage MCP works
@@ -127,6 +139,7 @@ Verify:
 
 - shared model not Ready
 - Gen AI Studio disabled
+- OGX not enabled or not Ready
 - missing Playground MCP registration
 - route not reachable
 - build failed in `packmate-lab`

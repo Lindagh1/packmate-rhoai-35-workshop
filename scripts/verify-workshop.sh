@@ -32,7 +32,9 @@ check_contains() {
   local label="$1"
   local command="$2"
   local needle="$3"
-  if bash -lc "${command}" 2>/dev/null | grep -q "${needle}"; then
+  local output
+  output="$(bash -lc "${command}" 2>/dev/null || true)"
+  if printf '%s' "${output}" | grep -q "${needle}"; then
     pass "${label}"
   else
     fail "${label}"
@@ -56,11 +58,17 @@ else
   fail "Backend pod"
 fi
 
-model_body="$(oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- sh -lc "curl -sS -m 20 '${MODEL_BASE_URL}/models'" 2>/dev/null || true)"
-if printf '%s' "${model_body}" | grep -q "${MODEL_NAME}"; then
-  pass "Model endpoint"
+BACKEND_RUNTIME_MODE="$(oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- printenv PACKMATE_RUNTIME_MODE 2>/dev/null || true)"
+BACKEND_BASE_URL="$(oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- printenv BASE_URL 2>/dev/null || true)"
+BACKEND_MODEL="$(oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- printenv MODEL 2>/dev/null || true)"
+
+[[ "${BACKEND_RUNTIME_MODE}" == "ogx" ]] && pass "Packmate runtime mode" || fail "Packmate runtime mode"
+
+model_body="$(oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- sh -lc "curl -sS -m 20 '${BACKEND_BASE_URL}/models'" 2>/dev/null || true)"
+if printf '%s' "${model_body}" | grep -q "${BACKEND_MODEL}"; then
+  pass "OGX endpoint"
 else
-  fail "Model endpoint"
+  fail "OGX endpoint"
 fi
 
 for name in weather-mcp baggage-policy-mcp packmate-backend packmate-frontend; do
@@ -95,11 +103,27 @@ else
   fail "MCP registration"
 fi
 
-if oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- sh -lc "curl -sS -m 20 http://weather-mcp:8080/health" | grep -q '"status":"ok"'; then
-  pass "MCP integration prereq"
+if oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- sh -lc "curl -sS -m 20 \"\${PACKMATE_WEATHER_MCP_URL%/mcp}/health\"" | grep -q '"status":"ok"'; then
+  pass "Weather MCP service"
 else
-  fail "MCP integration prereq"
+  fail "Weather MCP service"
 fi
+
+if oc -n "${WORKSHOP_NAMESPACE}" exec "${BACKEND_POD}" -- sh -lc "curl -sS -m 20 \"\${PACKMATE_BAGGAGE_MCP_URL%/mcp}/health\"" | grep -q '"status":"ok"'; then
+  pass "Baggage MCP service"
+else
+  fail "Baggage MCP service"
+fi
+
+check_contains \
+  "OGX weather tool smoke" \
+  "oc exec -n '${WORKSHOP_NAMESPACE}' '${BACKEND_POD}' -- sh -lc \"python -c 'import os;from openai import OpenAI;client=OpenAI(base_url=os.environ[\\\"BASE_URL\\\"],api_key=os.environ.get(\\\"LITELLM_API_KEY\\\",\\\"dummy\\\"));resp=client.responses.create(model=os.environ[\\\"MODEL\\\"],input=\\\"What is the weather in Rome over the next 3 days? Use the weather tool.\\\",tools=[{\\\"type\\\":\\\"mcp\\\",\\\"server_label\\\":\\\"weather\\\",\\\"server_url\\\":os.environ[\\\"PACKMATE_WEATHER_MCP_URL\\\"],\\\"require_approval\\\":\\\"never\\\"}]);print(resp.model_dump_json())'\"" \
+  '"mcp_call"'
+
+check_contains \
+  "OGX baggage tool smoke" \
+  "oc exec -n '${WORKSHOP_NAMESPACE}' '${BACKEND_POD}' -- sh -lc \"python -c 'import os;from openai import OpenAI;client=OpenAI(base_url=os.environ[\\\"BASE_URL\\\"],api_key=os.environ.get(\\\"LITELLM_API_KEY\\\",\\\"dummy\\\"));resp=client.responses.create(model=os.environ[\\\"MODEL\\\"],input=\\\"I have cabin baggage only. Can I take a 150 ml bottle and a power bank? Use the baggage tool.\\\",tools=[{\\\"type\\\":\\\"mcp\\\",\\\"server_label\\\":\\\"baggage\\\",\\\"server_url\\\":os.environ[\\\"PACKMATE_BAGGAGE_MCP_URL\\\"],\\\"require_approval\\\":\\\"never\\\"}]);print(resp.model_dump_json())'\"" \
+  '"mcp_call"'
 
 check_contains \
   "Python model example" \

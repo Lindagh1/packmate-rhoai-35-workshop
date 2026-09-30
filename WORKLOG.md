@@ -104,7 +104,6 @@ Verified documentation points re-checked for the live 3.5 target:
 - The docs explicitly describe:
   - Playground
   - Prompt/system instructions
-  - Knowledge tab for RAG
   - MCP tab
   - Python code export as a template, not guaranteed runnable code
 - The 3.5 Playground documentation still documents platform-level MCP registration
@@ -125,11 +124,10 @@ Current intended workshop flow, subject to live sandbox validation:
 4. Use Gen AI Playground
 5. Add system instructions
 6. Add MCP tools
-7. Add RAG only if the live 3.5.1 sandbox supports it reliably without extra heavy infrastructure
-8. Move to Python
-9. Use integrated Packmate app
-10. Run deterministic AI application regression evaluation
-11. Close with a short productionization explanation
+7. Move to Python
+8. Use integrated Packmate app
+9. Run deterministic AI application regression evaluation
+10. Close with a short productionization explanation
 
 ### Live sandbox discovery
 
@@ -343,15 +341,17 @@ Workshop implication:
 
 - The workshop may include a short conceptual OGX explanation for OpenShift AI 3.5
   terminology alignment
-- but the validated hands-on path must **not** depend on deploying or administering
-  OGX in this sandbox
+- the validated hands-on path should explain OGX only as platform plumbing,
+  not as a participant administration topic
 - documentation must clearly distinguish:
-  - actual validated sandbox path: KServe + vLLM + shared model + Playground
+  - actual participant path: KServe + vLLM + shared model + Playground
     + MCP ConfigMap registration
-  - optional broader 3.5 conceptual architecture where OGX can sit above
-    inference, tool, and retrieval providers
+  - broader 3.5 conceptual architecture where OGX can sit above
+    inference and tool providers
 
 #### RAG / knowledge capability state
+
+Out-of-scope investigation - RAG is not part of the final workshop.
 
 Live RBAC for `odh-dashboard-gen-ai` shows the Gen AI module can create
 namespace-scoped resources for an inline vector database workflow:
@@ -382,10 +382,15 @@ so RAG is not pre-provisioned for participants.
 - No participant notebooks currently exist.
 - `Workbenches` component is `Ready`.
 - Available workbench image streams live in `redhat-ods-applications`, including:
+  - `code-server-notebook`
   - `s2i-minimal-notebook`
   - `s2i-generic-data-science-notebook`
   - `pytorch`
   - `tensorflow`
+- Verified Code Server image metadata:
+  - image stream: `code-server-notebook`
+  - live UI label: `Code Server | Data Science | CPU | Python 3.12`
+  - `3.5` tag available in the sandbox
   - `jupyter-pytorch-llmcompressor`
 - Several images carry both `3.4` and `3.5` tags, but the installed platform is
   still 3.5.1.
@@ -404,9 +409,7 @@ so RAG is not pre-provisioned for participants.
 1. Rename the local repository and docs from `rhoai-34` to `rhoai-35`.
 2. Implement workshop preparation using the live 3.5.1 model-serving and
    Playground MCP path.
-3. Validate RAG in the live Playground and keep it optional if it requires extra
-   infrastructure or proves unreliable.
-4. Build docs and screenshots against the actual 3.5.1 UI.
+3. Build docs and screenshots against the actual 3.5.1 UI.
 
 ## Phase 2 - Implementation and validation
 
@@ -469,7 +472,383 @@ so RAG is not pre-provisioned for participants.
 
 ### Remaining blocker
 
-- Real screenshots and a full browser-based beginner rehearsal remain blocked by
-  browser-side authentication to the OpenShift AI web UI.
+- Browser authentication is now complete, but the live Gen AI Playground UI
+  remains blocked in a persistent `Loading` state.
 - CLI-side preparation, deployment, MCP registration, model access, Packmate
   route validation, and deterministic evaluation are all completed.
+
+## Phase 3 - Final Playground root-cause investigation
+
+### Browser frontend evidence
+
+Validated in the authenticated live browser session:
+
+- `https://rh-ai.apps.ocp.zs8cm.sandbox1073.opentlc.com/gen-ai-studio/playground/packmate-lab`
+- `https://rh-ai.apps.ocp.zs8cm.sandbox1073.opentlc.com/gen-ai-studio/playground/my-first-model`
+
+Observed DOM state for both pages:
+
+- page heading renders correctly
+- selected project name renders correctly
+- the main content never progresses beyond `Loading`
+
+The browser resource timeline shows the frontend bundles load successfully and the
+Playground then issues the following ordered Gen AI API requests:
+
+1. `GET /gen-ai/api/v1/namespaces` -> `200`
+2. `GET /gen-ai/api/v1/user` -> `200`
+3. `GET /api/integrations/nim` -> `200`
+4. requests against `namespace=cert-manager`
+5. requests against `namespace=packmate-lab`
+6. requests against `namespace=my-first-model`
+
+This matters because the first namespace returned by
+`/gen-ai/api/v1/namespaces` is `cert-manager`, and the frontend probes that
+namespace before it finishes processing the actual Playground target project.
+
+Exact first failed frontend request observed in browser timings and correlated
+dashboard proxy logs:
+
+- URL:
+  `https://rh-ai.apps.ocp.zs8cm.sandbox1073.opentlc.com/gen-ai/api/v1/nemo-guardrails/status?namespace=cert-manager`
+- HTTP status: `404`
+- response body:
+  `{"error":{"code":"not_found","message":"NemoGuardrails not found"}}`
+- correlated dashboard log:
+  `15:07:00Z` request to `/gen-ai/api/v1/nemo-guardrails/status?namespace=cert-manager`
+  completed with `statusCode: 404`
+
+The same `404` also occurs for:
+
+- `namespace=packmate-lab`
+- `namespace=my-first-model`
+
+At the same time, the other Playground initialization calls succeed:
+
+- `GET /gen-ai/api/v1/config?namespace=my-first-model` -> `200`
+- `GET /gen-ai/api/v1/aaa/models?namespace=my-first-model` -> `200`
+- `GET /gen-ai/api/v1/aaa/mcps?namespace=my-first-model` -> `200`
+- `GET /gen-ai/api/v1/aaa/vectorstores?namespace=my-first-model` -> `200`
+- the same request families for `packmate-lab` also return `200` with empty-but-valid
+  responses where appropriate
+
+No additional pending Gen AI requests remained in the browser resource timeline
+once the page had settled into the persistent `Loading` state.
+
+### Dashboard feature flags
+
+Live values from `GET /api/config`:
+
+- `genAiStudio: true`
+- `guardrails: false`
+- `genAiTracing: false`
+- `mcpCatalog: false`
+- `agentsCatalog: false`
+- `toolCalling: true`
+
+Implication:
+
+- because `guardrails` is explicitly `false`, the missing `NemoGuardrails`
+  resource must not be treated as an expected required workshop object
+- however, the frontend still calls the guardrails status endpoint during
+  Playground initialization and then never exits `Loading`
+
+### OGX state
+
+Live cluster state shows OGX is not active:
+
+- `DataScienceCluster.status.components.ogx.managementState: Removed`
+- `DataScienceCluster` condition `OGXReady=False`
+- condition message: `Module ManagementState is set to Removed`
+- no OGX pods were found
+- no OGX services or routes were found
+- no OGX CRDs were found
+
+Conclusion for this check:
+
+- OGX status is `OGX NOT READY`
+
+This is significant because the live platform exposes the Playground UI while
+the documented OGX prerequisite is not actually enabled in the sandbox.
+
+### Backend vs frontend request comparison
+
+Direct backend/API validation shows the current workshop assets are healthy:
+
+- `my-first-model` model discovery returns the shared
+  `llama-32-3b-instruct` endpoint
+- MCP discovery returns both Packmate MCP servers as `healthy`
+- vector stores return a valid empty list
+- config returns a valid payload
+
+The frontend behavior differs from the healthy direct backend checks in two ways:
+
+1. it initializes against `cert-manager` first because that namespace appears
+   first in `/gen-ai/api/v1/namespaces`
+2. it calls `nemo-guardrails/status` even though `guardrails=false`
+
+### Add to playground path
+
+The live `Gen AI studio -> AI asset endpoints -> my-first-model` page for
+`llama-32-3b-instruct` does not currently expose an `Add to playground` action.
+
+Observed live UI for the model row and modal:
+
+- visible row action: `View`
+- endpoint modal actions: `Copy URL`, `Close`
+- no visible `Add to playground` action in the rendered DOM
+
+Therefore the requested alternate supported UI path is not currently available
+in this sandbox for the shared model.
+
+### Correlated server logs
+
+Recent `gen-ai-ui` logs during the failed loads show:
+
+- successful model discovery for `my-first-model`
+- expected missing optional ConfigMaps such as:
+  - `gen-ai-aa-custom-model-endpoints`
+  - `gen-ai-aa-vector-stores`
+- no corresponding `5xx` platform error explaining the stuck page
+
+Recent `rhods-dashboard` proxy logs show:
+
+- the guardrails status request for `cert-manager` completes with `404`
+- subsequent requests for `packmate-lab` and `my-first-model` are still issued
+- the browser-visible page remains `Loading` afterward
+
+### Decision
+
+Classification: `C. CONFIRMED RHOAI 3.5.1 SANDBOX/UI DEFECT`
+
+Exact confirmed root cause:
+
+- the live Playground frontend enters initialization correctly, but during that
+  sequence it probes `nemo-guardrails/status` starting with `namespace=cert-manager`
+  and receives `404 Not Found`
+- the dashboard feature flag `guardrails=false` proves that NeMo Guardrails is
+  not meant to be a required enabled feature in this environment
+- all model, MCP, vector store, and config calls needed for the workshop's
+  actual assets succeed
+- despite that, the Playground never leaves `Loading`
+- the same sandbox also has `OGX` explicitly `Removed`, so the platform state is
+  inconsistent with the documented Playground prerequisite set
+
+Net result:
+
+- this is not a Packmate deployment issue
+- this is not an MCP registration issue
+- this is not a shared model serving issue
+- this is a live sandbox/platform defect involving an inconsistent Playground
+  prerequisite/configuration state and frontend behavior that does not recover
+  from the guardrails path it still probes
+
+### Replacement sandbox requirements
+
+If we move to another RHOAI 3.5 sandbox, it should provide all of the following:
+
+- OpenShift AI `3.5.x` on a compatible OpenShift `4.20.x` cluster
+- `genAiStudio=true`
+- a Playground page that fully renders instead of remaining on `Loading`
+- OGX enabled and `Ready` if that remains the documented prerequisite
+- either:
+  - no guardrails status call when `guardrails=false`, or
+  - a non-error supported response path for guardrails status
+- a reusable shared model endpoint compatible with the existing workshop scripts
+- support for platform-level MCP registration via
+  `ConfigMap/gen-ai-aa-mcp-servers`
+
+### What to rerun after switching sandbox
+
+After changing sandbox, the intended recovery path is:
+
+1. `oc login ...`
+2. `make workshop-ready`
+3. rerun the browser-based Playground validation
+4. recapture the real screenshots
+5. rerun `make verify-workshop`
+
+## Phase 4 - OGX enablement attempt
+
+### Pre-patch state
+
+Before any change, I re-validated the live `DataScienceCluster` and the current
+operator state.
+
+Discovered live `DataScienceCluster`:
+
+- name: `default-dsc`
+
+Permission check:
+
+- `oc auth can-i patch datascienceclusters.opendatahub.io` -> `yes`
+
+Relevant pre-patch OGX state from the live DSC:
+
+- `spec.components.ogx` is not present
+- `status.components.ogx.managementState: Removed`
+- DSC condition `OGXReady=False`
+- DSC condition message: `Module ManagementState is set to Removed`
+
+Relevant pre-patch platform pod view in `redhat-ods-applications`:
+
+- `dashboard-operator` running
+- `gen-ai-ui` running
+- `rhods-dashboard` running
+- no OGX operator/controller pod present
+
+### Supported patches applied
+
+First patch applied successfully:
+
+- `oc patch datasciencecluster default-dsc --type=merge -p '{"spec":{"components":{"ogx":{"managementState":"Managed"}}}}'`
+
+Immediate result:
+
+- `spec.components.ogx.managementState` became `Managed`
+- the operator still kept `status.components.ogx.managementState=Removed`
+- `OGXReady=False`
+
+Operator-root-cause evidence from `rhods-operator`:
+
+- `LlamaStackOperator is set to Managed; it has been deprecated, set it to Removed before enabling OGX`
+
+This proved that enabling OGX on this live RHOAI 3.5.1 cluster also required a
+second, explicit, operator-supported DSC change:
+
+- `oc patch datasciencecluster default-dsc --type=merge -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Removed"}}}}'`
+
+I verified before applying that there were no active `llamastack` workloads in
+the cluster. The shared workshop model remained the existing KServe/vLLM
+deployment in `my-first-model`.
+
+### Post-patch OGX state
+
+After the second patch, the operator created and reconciled OGX successfully.
+
+Live post-patch state:
+
+- `spec.components.ogx.managementState: Managed`
+- `spec.components.llamastackoperator.managementState: Removed`
+- `status.components.ogx.managementState: Managed`
+- `OGXReady=True`
+- overall DSC `Ready=True`
+
+Live OGX resources now present:
+
+- namespace: `opendatahub-ogx-system`
+- deployment: `opendatahub-ogx-operator`
+- deployment: `ogx-k8s-operator-controller-manager`
+- CRD: `ogxs.components.platform.opendatahub.io`
+- CRD: `ogxservers.ogx.io`
+- root OGX CR: `default-ogx`
+
+`default-ogx` status:
+
+- `Ready=True`
+- `RootOperatorReady=True`
+- `RootWebhookReady=True`
+- release versions:
+  - `OGX v1.2.1`
+  - `OGX Operator v0.13.0`
+
+### Post-patch Playground behavior
+
+Using the authenticated browser session, I reloaded the live Playground for
+`my-first-model`.
+
+Observed result:
+
+- the page no longer remained stuck on `Loading`
+- it rendered `Create your playground`
+- it displayed the `Create playground` action
+
+This confirms that enabling OGX fixed the primary UI deadlock that previously
+blocked the Playground landing page.
+
+I was not able to complete the equivalent visual confirmation for
+`packmate-lab` because the Cursor native approval UI became unreliable and
+stopped accepting clicks on its own approval cards during the follow-up browser
+steps. That blocker is in the local Cursor approval layer, not in the
+OpenShift/OpenShift AI sandbox.
+
+### New post-OGX backend findings
+
+Out-of-scope investigation - RAG is not part of the final workshop. These
+notes were captured to explain live Playground behavior but should not drive
+the final participant flow or workshop acceptance criteria.
+
+After OGX became ready, the frontend/backend request pattern changed:
+
+- `GET /gen-ai/api/v1/lsd/status?namespace=my-first-model` -> `200` with `{"data":null}`
+- `GET /gen-ai/api/v1/lsd/status?namespace=packmate-lab` -> `200` with `{"data":null}`
+- `GET /gen-ai/api/v1/lsd/vectorstores?namespace=my-first-model` -> `500`
+- `GET /gen-ai/api/v1/lsd/vectorstores?namespace=packmate-lab` -> `500`
+
+Correlated `gen-ai-ui` logs identify the reason precisely:
+
+- `no OGXServer found in namespace "my-first-model"`
+- `no OGXServer found in namespace "packmate-lab"`
+
+Interpretation:
+
+- OGX platform enablement is now healthy
+- the base Playground landing page is no longer blocked
+- RAG/vector-store functionality now appears to depend on namespace-scoped
+  `OGXServer` resources, which are not yet present in the workshop namespaces
+- this is a separate post-OGX integration step from the original `Loading`
+  failure
+
+### OGXServer trial and cleanup
+
+Out-of-scope investigation - RAG is not part of the final workshop.
+
+To validate the next supported step, I tested a namespace-scoped `OGXServer`
+against the live operator.
+
+What the live operator accepted:
+
+- `OGXServer` kind in `my-first-model`
+- supported distributions reported by webhook:
+  - `rh`
+  - `rh-dev`
+
+What the live operator rejected:
+
+- `distribution.name: starter`
+- webhook message:
+  `unknown distribution "starter"; available distributions: rh, rh-dev`
+
+Live trial result with a minimal `OGXServer` using `distribution.name: rh` and
+`VLLM_URL` pointing at the existing KServe/vLLM service:
+
+- the resource was admitted
+- PVC and Service were created
+- the pod started and then crashed
+
+Exact crash evidence from the OGX pod logs:
+
+- `ValidationError: storage.backends.kv_default.kv_postgres.db`
+- `ValidationError: storage.backends.kv_default.kv_postgres.user`
+- `ValidationError: storage.backends.sql_default.sql_postgres.db`
+- `ValidationError: storage.backends.sql_default.sql_postgres.user`
+
+Interpretation:
+
+- the Red Hat `rh` / `rh-dev` distributions in this sandbox expect additional
+  storage configuration that is not satisfied by the minimal manifest
+- therefore a simple "turn on OGX and create one tiny OGXServer" path is not
+  yet sufficient to validate RAG in this sandbox
+
+Because this test did not converge and was not required for the base Playground
+landing page fix, I cleaned up the failed trial:
+
+- deleted `OGXServer/packmate-ogx`
+- deleted the residual `PVC/packmate-ogx-pvc`
+
+Current validated state after cleanup:
+
+- OGX root platform components remain healthy
+- Playground base entry for `my-first-model` is fixed
+- RAG-related `lsd/vectorstores` behavior remains outside the final workshop
+  scope

@@ -43,7 +43,8 @@ The live sandbox uses:
 
 ```mermaid
 flowchart TD
-  UserCode[Workbench / Python / Playground / Packmate] --> Endpoint[Shared model endpoint]
+  UserCode[Workbench / Playground / Packmate] --> OGX[OGX runtime]
+  OGX --> Endpoint[Shared model endpoint]
   Endpoint --> KS[KServe InferenceService]
   KS --> SR[ServingRuntime]
   SR --> V[vLLM runtime]
@@ -64,16 +65,19 @@ vLLM loads the model and generates tokens for requests.
 sequenceDiagram
   participant U as User
   participant P as Playground or Packmate
+  participant O as OGX
   participant M as Shared model
   participant T as MCP server
 
   U->>P: Ask a question
-  P->>M: Send prompt and tool definitions
-  M->>P: Choose a tool call
-  P->>T: Execute MCP tool
-  T-->>P: Return tool result
-  P->>M: Provide tool result
-  M-->>P: Final answer
+  P->>O: Send prompt + available MCP tools
+  O->>M: Request model reasoning
+  M-->>O: Choose a tool call
+  O->>T: Execute MCP tool
+  T-->>O: Return tool result
+  O->>M: Continue with tool result
+  M-->>O: Final answer
+  O-->>P: Structured response
 ```
 
 ## Weather and baggage MCP architecture
@@ -83,62 +87,66 @@ flowchart LR
   Playground --> MCPConfig[gen-ai-aa-mcp-servers]
   MCPConfig --> Weather[Weather MCP route]
   MCPConfig --> Baggage[Baggage Policy MCP route]
-  App[Packmate backend] --> Weather
-  App --> Baggage
+  App[Packmate backend] --> OGX[OGX OpenAI-compatible API]
+  OGX --> Weather
+  OGX --> Baggage
   Weather --> OpenMeteo[Open-Meteo API]
   Baggage --> Rules[Deterministic workshop rules]
 ```
 
-## RAG architecture
-
-Use this section only if the live Playground RAG flow is validated during rehearsal.
-
-```mermaid
-flowchart TD
-  Doc[Packmate baggage policy file] --> KB[Knowledge upload in Playground]
-  KB --> VS[Inline vector store resources]
-  VS --> Model[Shared model]
-  Model --> Answer[Grounded answer with cited context]
-```
-
-Important:
-
-- RAG is not training
-- RAG retrieves relevant context at request time
-
 ## OGX in this workshop
 
-OpenShift AI `3.5` introduces OGX terminology, but the live sandbox used for this workshop does **not** have the `ogx` component enabled.
+OpenShift AI `3.5` introduces OGX terminology, and the live sandbox used for this workshop has OGX enabled as part of the platform layer behind Playground and the Packmate application runtime.
 
 That means:
 
 - OGX is relevant conceptually for `3.5`
-- OGX is **not** the validated hands-on runtime path in this sandbox
+- OGX is part of the validated runtime path for Playground in this sandbox
+- OGX is also the validated primary runtime path for the Packmate backend
+- participants do **not** administer OGX directly in this workshop
 
 Beginner-level conceptual picture:
 
 ```mermaid
 flowchart TD
-  UX[Workbench / Python / Playground] --> OGX[OGX concept]
+  UX[Workbench / Python / Playground / Packmate] --> OGX[OGX concept]
   OGX --> Infer[Inference]
   OGX --> Tools[Tools]
-  OGX --> Retrieval[Retrieval]
   Infer --> ModelEndpoint[Model endpoint]
   Tools --> MCP[MCP]
-  Retrieval --> RAG[RAG]
 ```
 
-Use this as a concept map only. It does not replace the actual live serving path documented above.
+Use this as a concept map only. It does not replace the actual live serving path documented above, and it does not mean OGX replaces KServe or vLLM.
 
 ## Packmate application architecture
 
 ```mermaid
 flowchart LR
   UI[React frontend] --> API[FastAPI backend]
-  API --> SharedModel[Shared llama-32-3b-instruct]
-  API --> WeatherMCP[Weather MCP]
-  API --> BaggageMCP[Baggage Policy MCP]
+  API --> OGXAPI[OGX responses API]
+  OGXAPI --> SharedModel[Shared llama-32-3b-instruct via KServe + vLLM]
+  OGXAPI --> WeatherMCP[Weather MCP]
+  OGXAPI --> BaggageMCP[Baggage Policy MCP]
 ```
+
+## Where the code lives
+
+- `app/frontend`: React user interface
+- `app/backend`: FastAPI application API and business logic
+- `app/backend/app/agent/ogx_service.py`: OGX-native orchestration path
+- `mcp/weather`: Weather MCP server
+- `mcp/baggage`: Baggage Policy MCP server
+- `examples/01_call_model.py`: simple shared-model call
+- `examples/02_packmate_with_tools.py`: call the deployed Packmate API
+
+## Support-status note
+
+In the validated OpenShift AI `3.5.1` environment:
+
+- Gen AI Playground is Technology Preview
+- custom endpoints are Technology Preview
+- MCP Lifecycle and MCP Catalog remain Technology Preview and are not required for this workshop
+- the OGX remote provider / SDK compatibility used for MCP HTTP streaming should be treated as Developer Preview
 
 ## Prototype to production
 

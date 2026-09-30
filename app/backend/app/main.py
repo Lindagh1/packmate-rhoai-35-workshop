@@ -12,7 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.agent.exceptions import AgentResponseError, LLMConfigurationError
 from app.agent.progress import ProgressStage
-from app.agent.service import AgentService
+from app.agent.runtime import create_agent_service
 from app.models.chat import ChatRequest, PackingResponse
 from app.models.weather import WeatherResponse
 from app.observability import (
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 HEARTBEAT_INTERVAL_SECONDS = float(os.getenv("PACKMATE_STREAM_HEARTBEAT_SECONDS", "10"))
 
 app = FastAPI(title="Packmate API", version=PACKMATE_VERSION)
-agent_service = AgentService()
+agent_service = create_agent_service()
 setup_telemetry(app)
 
 
