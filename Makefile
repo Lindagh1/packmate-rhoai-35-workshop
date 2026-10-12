@@ -1,7 +1,7 @@
 ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SHELL := /bin/bash
 
-.PHONY: preflight prepare-workshop verify-workshop diagnose reset-participant cleanup workshop-ready test
+.PHONY: preflight prepare-workshop verify-workshop diagnose reset-participant cleanup workshop-ready test participant-guide-pdf
 
 preflight:
 	@bash "$(ROOT)/scripts/preflight.sh"
@@ -22,6 +22,9 @@ cleanup:
 	@bash "$(ROOT)/scripts/cleanup.sh"
 
 workshop-ready: preflight prepare-workshop verify-workshop
+
+participant-guide-pdf:
+	@python3 "$(ROOT)/scripts/render_participant_guide_pdf.py"
 
 test:
 	@set -euo pipefail; \
