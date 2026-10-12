@@ -35,58 +35,71 @@ The platform team has already prepared the heavy infrastructure for you:
 Your learning goal is to understand how to build with those prepared
 capabilities, not how to install them from scratch.
 
-## Module 0 - Meet Packmate
+## Workshop story
+
+Packmate is the single story that connects the whole workshop.
+
+You will progressively answer questions such as:
+
+- What should I pack for Rome next week?
+- Can I take a 150 ml liquid in cabin baggage?
+- Can I put a power bank in checked baggage?
+
+The same story will appear in four places:
+
+- in Playground, where you prototype prompts and tool use
+- in Python, where you call the model and the deployed application
+- in the MCP servers, which expose live tools
+- in the final Packmate web application
+
+## Module 0 - Access your sandbox and OpenShift AI
 
 **WHAT YOU WILL DO**
 
-Understand the workshop story and the Packmate travel assistant.
+Open the OpenShift console, keep your personal `oc login` command ready, and
+open Red Hat OpenShift AI.
 
 **WHY THIS MATTERS**
 
-You will improve one continuous AI application instead of learning isolated features.
+You will need the browser console for navigation and the `oc login` command for
+the self-service bootstrap later in the workshop.
 
 **TIME**
 
-5 minutes
+5 to 10 minutes
 
 **STEP-BY-STEP INSTRUCTIONS**
 
-1. Open Red Hat OpenShift AI.
-2. Keep this goal in mind: Packmate helps a traveler decide what to pack.
-3. Example questions:
-   - What should I pack for Rome?
-   - Can I take a 150 ml liquid in cabin baggage?
-   - Can I put a power bank in checked baggage?
+1. Open the OpenShift web console URL provided with your sandbox.
+2. Sign in with the sandbox credentials provided to you.
+3. In the OpenShift console, open the `?` help menu and select **Command line tools**.
+4. Click **Copy login command**.
+5. If OpenShift asks you to authenticate again, do it, then copy the full `oc login ...` command and keep it for later.
+6. Open **Red Hat OpenShift AI** from the application launcher or from the dashboard link provided by your sandbox.
+7. Confirm that the OpenShift AI dashboard opens successfully.
 
 **SCREENSHOT**
 
-![OpenShift AI](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/01-open-openshift-ai.png)
+![OpenShift AI dashboard home page](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/01-open-openshift-ai.png)
 
 **EXPECTED RESULT**
 
-You understand the workshop goal.
+You are inside OpenShift AI and you have your own `oc login` command ready for later use.
 
 **WHAT JUST HAPPENED?**
 
-Packmate is the story that connects Playground, Python, MCP, and the final application.
+You prepared the two access paths used in this workshop:
 
-As a first-time OpenShift AI user, this matters because the platform can feel
-like many separate menus at first. The workshop gives you one continuous thread:
-
-- OpenShift AI gives you a project and a workbench
-- the platform team has already prepared a shared model
-- Playground helps you prototype
-- MCP adds live tools
-- Code Server helps you inspect the actual application
-- the Packmate app shows the same idea in a user-facing product
+- the web UI for OpenShift AI
+- the CLI command used to bootstrap your own sandbox safely
 
 **CHECKPOINT**
 
-- [ ] I know what Packmate does
+Before continuing, make sure you can open OpenShift AI and that you have copied your own `oc login ...` command into a temporary note.
 
 **IF IT DOESN'T WORK**
 
-Ask the instructor to confirm that the OpenShift AI dashboard is available.
+Ask the instructor to confirm that your sandbox account is active and that the OpenShift AI dashboard is enabled.
 
 ## Module 1 - Create your AI workspace
 
@@ -118,11 +131,11 @@ The project groups your AI resources. The Code Server Workbench is your browser-
 
 **SCREENSHOTS**
 
-![Projects](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/02-data-science-projects.png)
-![Create Project](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/03-create-project.png)
-![Create Workbench](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/04-create-workbench.png)
-![Workbench Running](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/05-workbench-running.png)
-![Open Workbench](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/06-open-workbench.png)
+![Projects page before creating packmate-lab](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/02-data-science-projects.png)
+![Create project dialog for packmate-lab](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/03-create-project.png)
+![Create workbench form for packmate-workbench](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/04-create-workbench.png)
+![Workbench list showing packmate-workbench running](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/05-workbench-running.png)
+![Open workbench action from the workbench list](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/06-open-workbench.png)
 
 **EXPECTED RESULT**
 
@@ -143,10 +156,7 @@ application code, not just experiments in a chat UI.
 
 **CHECKPOINT**
 
-- [ ] I created `packmate-lab`
-- [ ] I created the Workbench
-- [ ] the Workbench is `Running`
-- [ ] the Workbench opens
+Before continuing, make sure `packmate-lab` exists, `packmate-workbench` is `Running`, and the Workbench opens in your browser.
 
 **IF IT DOESN'T WORK**
 
@@ -185,7 +195,7 @@ oc whoami
 ```
 
 4. If the result starts with `system:serviceaccount:`, log in with your human
-   sandbox credentials by pasting your `oc login ...` command into the terminal.
+   sandbox credentials by pasting the `oc login ...` command that you copied from the OpenShift console into the terminal.
 5. Run the one-time workshop bootstrap:
 
 ```bash
@@ -216,9 +226,7 @@ prepared AI workflow.
 
 **CHECKPOINT**
 
-- [ ] I cloned the repository
-- [ ] I authenticated `oc` as my user
-- [ ] `make workshop-ready` completed successfully
+Before continuing, make sure the repository is cloned, `oc whoami` returns your user account, and `make workshop-ready` completed successfully.
 
 **IF IT DOESN'T WORK**
 
@@ -260,9 +268,9 @@ python examples/01_call_model.py
 
 **SCREENSHOTS**
 
-![AI asset endpoints](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/07-ai-asset-endpoints.png)
-![Shared model endpoint](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/08-packmate-model-endpoint.png)
-![Python model call](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
+![AI asset endpoints page in Gen AI studio](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/07-ai-asset-endpoints.png)
+![Shared llama-32-3b-instruct model endpoint in my-first-model](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/08-packmate-model-endpoint.png)
+![Workbench terminal showing the Python model call example](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
 
 **EXPECTED RESULT**
 
@@ -282,8 +290,7 @@ In this workshop, `my-first-model` is the project that exposes the shared model.
 
 **CHECKPOINT**
 
-- [ ] I can find `llama-32-3b-instruct`
-- [ ] the Python example returns a response
+Before continuing, make sure you can see `llama-32-3b-instruct` in `my-first-model` and that the Python example returns a response in the Workbench terminal.
 
 **IF IT DOESN'T WORK**
 
@@ -318,8 +325,8 @@ Playground is the fastest place to experiment before you write application code.
 
 **SCREENSHOTS**
 
-![Playground model selected](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/09-playground-model-selected.png)
-![System prompt](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/10-playground-system-prompt.png)
+![Playground with the shared model selected](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/09-playground-model-selected.png)
+![Prompt tab with the Packmate system instructions](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/10-playground-system-prompt.png)
 
 **EXPECTED RESULT**
 
@@ -340,9 +347,7 @@ you commit anything to the application.
 
 **CHECKPOINT**
 
-- [ ] the model responds
-- [ ] the system instructions are active
-- [ ] I understand the difference between system instructions and a user question
+Before continuing, make sure the model responds in Playground and that you can explain the difference between a user question and the Packmate system instructions.
 
 **IF IT DOESN'T WORK**
 
@@ -382,10 +387,10 @@ MCP gives the model live capabilities instead of only static knowledge.
 
 **SCREENSHOTS**
 
-![Weather MCP enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/13-weather-mcp-enabled.png)
-![Weather tool call](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/14-weather-tool-call.png)
-![Baggage MCP enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/15-baggage-mcp-enabled.png)
-![Baggage tool call](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/16-baggage-tool-call.png)
+![MCP tab with the Weather server enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/13-weather-mcp-enabled.png)
+![Weather tool call details in Playground](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/14-weather-tool-call.png)
+![MCP tab with the Baggage Policy server enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/15-baggage-mcp-enabled.png)
+![Baggage policy tool call details in Playground](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/16-baggage-tool-call.png)
 
 **EXPECTED RESULT**
 
@@ -414,10 +419,7 @@ That is the core mental model of agentic AI in this workshop.
 
 **CHECKPOINT**
 
-- [ ] Weather MCP is enabled
-- [ ] baggage MCP is enabled
-- [ ] I can explain what an MCP server and a tool are
-- [ ] I can explain how the model used the tool result
+Before continuing, make sure both MCP servers are enabled and that you can explain which tool the model chose, which arguments it sent, and how the tool result changed the final answer.
 
 **IF IT DOESN'T WORK**
 
@@ -437,7 +439,7 @@ This is the bridge from experimentation to application code.
 
 At this point, you switch from "Playground user" to "AI developer".
 
-In this workshop, Code Server is where you develop and inspect the project:
+In this workshop, Code Server is where you inspect and understand the project:
 
 - `app/frontend` contains the React frontend
 - `app/backend` contains the FastAPI backend
@@ -451,39 +453,20 @@ In this workshop, Code Server is where you develop and inspect the project:
 
 This workshop now follows the OpenShift AI `3.5` agentic path more closely:
 
-That means:
+Keep this mental model in mind:
 
-- the platform team prepares OGX
+- the platform team prepared OGX for you
 - the shared model is still served by `KServe + ServingRuntime + vLLM`
-- Packmate keeps a simple application stack: `React frontend -> FastAPI backend -> OGX`
-- OGX is the agent runtime that gives the model access to the prepared MCP servers
-- you do **not** create OGX resources in this workshop
+- the Packmate application path is `React frontend -> FastAPI backend -> OGX`
+- OGX is the runtime that connects the model to the prepared MCP servers
+- you do **not** administer OGX in this workshop
 
-So the story is:
+Why this matters:
 
-- in Playground, you see model + MCP behavior from the OpenShift AI UI
-- in Code Server, you inspect the same idea in application code
-- the backend does not call the MCP servers directly in the main runtime path
-- instead, the backend sends one agentic request to OGX
-- OGX reaches the shared model and the MCP servers for you
-
-This is the moment where many first-time users ask:
-
-"If Playground already works, why do I need Code Server?"
-
-The answer is:
-
-- Playground helps you learn and prototype
-- Code Server is where you understand the stack
-- the repository shows you where the frontend, backend, prompts, and MCP servers live
-- the application code shows how the same idea becomes a repeatable product
-
-What you should understand in this module:
-
-- the Packmate web application is already deployed in the cluster
-- you are not starting the production workshop app locally from your laptop
-- Code Server is where you inspect, learn, and run focused examples
-- the deployed app and the code repository represent the same architecture
+- Playground shows the behavior from the UI
+- Code Server shows where that behavior lives in code
+- the deployed app uses the same model and the same MCP tools through OGX
+- the repository shows you which component owns which part of the flow
 
 If you want to inspect the code path, look at:
 
@@ -524,7 +507,7 @@ python examples/02_packmate_with_tools.py
 
 **SCREENSHOT**
 
-![Workbench Python call](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
+![Workbench terminal running the Packmate Python examples](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
 
 **EXPECTED RESULT**
 
@@ -553,31 +536,18 @@ As a data scientist or AI developer, this is the key mental model:
 - OGX does not replace `KServe` or `vLLM`; it sits in front of them for this workflow
 - the Weather and Baggage MCP servers are still normal tool services that OGX can call
 
-If you want to explain the coding mechanism simply:
+Use this short map when you inspect the repository:
 
-- `app/frontend` is the user interface
-- `app/backend` is the application API
-- `app/backend/app/agent/ogx_service.py` is where the OGX-backed AI logic lives
-- `mcp/weather` and `mcp/baggage` are the tool servers
-- `scripts/prepare-workshop.sh` is where the workshop automation discovers the OGX service endpoint and injects it into the backend configuration
-- `examples/01_call_model.py` shows a simple model call
-- `examples/02_packmate_with_tools.py` shows the application path
-- `pipelines/packmate-evaluation.pipeline.yaml` is the project pipeline definition used for evaluation
-
-How the MCP servers were built for the workshop:
-
-- each MCP server is implemented as a small FastMCP HTTP service
-- the Weather MCP server exposes weather tools
-- the Baggage MCP server exposes deterministic baggage-rule tools
-- `make prepare-workshop` builds and deploys those services into `packmate-lab`
-- the backend does not hardcode tool answers; it reaches them through OGX
+- `app/frontend`: the React user interface
+- `app/backend`: the FastAPI application API
+- `app/backend/app/agent/ogx_service.py`: the OGX-backed AI orchestration
+- `mcp/weather` and `mcp/baggage`: the two MCP tool servers
+- `scripts/prepare-workshop.sh`: the workshop bootstrap that discovers the OGX endpoint and configures the backend
+- `pipelines/packmate-evaluation.pipeline.yaml`: the evaluation pipeline definition
 
 **CHECKPOINT**
 
-- [ ] I can run the model example
-- [ ] I can run the Packmate application example
-- [ ] I can explain where the frontend, backend, and MCP servers live in the repo
-- [ ] I can explain that Packmate uses OGX without requiring the participant to administer OGX
+Before continuing, make sure you can run both Python examples and point to the frontend, backend, MCP servers, and OGX-backed runtime path in the repository.
 
 **IF IT DOESN'T WORK**
 
@@ -605,7 +575,7 @@ This shows how prototype behavior becomes part of an application with extra cont
 
 **SCREENSHOT**
 
-![Packmate application](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/18-packmate-application.png)
+![Packmate web application answering a travel question](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/18-packmate-application.png)
 
 **EXPECTED RESULT**
 
@@ -630,8 +600,7 @@ Important:
 
 **CHECKPOINT**
 
-- [ ] I opened the application
-- [ ] I received a structured answer
+Before continuing, make sure you opened the deployed Packmate application and received a structured answer for a travel scenario.
 
 **IF IT DOESN'T WORK**
 
@@ -670,7 +639,7 @@ python examples/03_evaluate_packmate.py
 
 **SCREENSHOT**
 
-![Evaluation result](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/19-evaluation-result.png)
+![Pipeline run result for the Packmate evaluation](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/19-evaluation-result.png)
 
 **EXPECTED RESULT**
 
@@ -695,9 +664,7 @@ Important:
 
 **CHECKPOINT**
 
-- [ ] I uploaded the pipeline YAML
-- [ ] I ran the evaluation pipeline
-- [ ] I understand why this is not a universal accuracy score
+Before continuing, make sure you uploaded the pipeline YAML, launched the run, and understand that this evaluation is a repeatable regression check rather than a universal accuracy score.
 
 **IF IT DOESN'T WORK**
 
@@ -732,7 +699,7 @@ You can explain the role of Workbench, Playground, OGX, KServe, vLLM, MCP, and e
 
 **CHECKPOINT**
 
-- [ ] I can explain the high-level architecture
+Before continuing, make sure you can explain the role of the Workbench, Playground, OGX, KServe, vLLM, MCP, and the Packmate application in one short flow.
 
 ## Module 10 - From prototype to production
 
