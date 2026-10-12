@@ -23,13 +23,14 @@ They reuse a shared model that already exists in the sandbox and learn how OpenS
 flowchart TD
   A[Open OpenShift AI] --> B[Create project]
   B --> C[Create Workbench]
-  C --> D[Create or open model endpoint view]
-  D --> E[Use Gen AI Playground]
-  E --> F[Add system instructions]
-  F --> G[Enable MCP tools]
-  G --> H[Run Python example]
-  H --> I[Open Packmate application]
-  I --> J[Run evaluation pipeline]
+  C --> D[Clone repo and run bootstrap]
+  D --> E[Open model endpoint view]
+  E --> F[Use Gen AI Playground]
+  F --> G[Add system instructions]
+  G --> H[Enable MCP tools]
+  H --> I[Run Python example]
+  I --> J[Open Packmate application]
+  J --> K[Run evaluation pipeline]
 ```
 
 ## Actual serving architecture

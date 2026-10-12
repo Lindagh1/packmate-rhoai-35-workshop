@@ -11,15 +11,16 @@ Validated on:
 
 This workshop teaches a simple AI builder journey:
 
-1. Create or open an OpenShift AI project and Workbench
-2. Reuse a shared Llama model provided by the platform
-3. Prototype in the Gen AI Playground
-4. Improve results with system instructions
-5. Add MCP tools for weather and baggage guidance
-6. Call the same model from Python
-7. Use the integrated Packmate application
-8. Run a deterministic AI application regression evaluation from OpenShift AI Pipelines
-9. Understand the validated sandbox architecture
+1. Create an OpenShift AI project and Workbench
+2. Clone the repository and run the workshop bootstrap
+3. Reuse a shared Llama model provided by the platform
+4. Prototype in the Gen AI Playground
+5. Improve results with system instructions
+6. Add MCP tools for weather and baggage guidance
+7. Call the same model from Python
+8. Use the integrated Packmate application
+9. Run a deterministic AI application regression evaluation from OpenShift AI Pipelines
+10. Understand the validated sandbox architecture
 
 The workshop intentionally does **not** make participants install operators, deploy another LLM, manage GPUs, use Tekton, or perform GitOps tasks in the main hands-on path.
 

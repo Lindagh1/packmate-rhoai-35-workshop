@@ -152,7 +152,87 @@ application code, not just experiments in a chat UI.
 
 See `workshop/TROUBLESHOOTING.md` for Workbench and PVC issues.
 
-## Module 2 - Meet the shared model
+## Module 2 - Bootstrap the workshop environment
+
+**WHAT YOU WILL DO**
+
+Clone the workshop repository, authenticate the OpenShift CLI as yourself, and
+prepare the workshop environment in your sandbox.
+
+**WHY THIS MATTERS**
+
+This workshop is self-service. You prepare the workshop services once, then you
+consume them as a data scientist or AI developer.
+
+**TIME**
+
+10 to 15 minutes
+
+**STEP-BY-STEP INSTRUCTIONS**
+
+1. In Code Server, open a terminal.
+2. Clone the workshop repository:
+
+```bash
+git clone https://github.com/Lindagh1/packmate-rhoai-35-workshop.git
+cd packmate-rhoai-35-workshop
+```
+
+3. In the terminal, check your current CLI identity:
+
+```bash
+oc whoami
+```
+
+4. If the result starts with `system:serviceaccount:`, log in with your human
+   sandbox credentials by pasting your `oc login ...` command into the terminal.
+5. Run the one-time workshop bootstrap:
+
+```bash
+make workshop-ready
+```
+
+6. Wait until the command completes successfully.
+
+**EXPECTED RESULT**
+
+The workshop services, MCP integration, application route, OGX connection, and
+project pipeline server are prepared for the remaining modules.
+
+**WHAT JUST HAPPENED?**
+
+You performed the one-time environment bootstrap for your own sandbox.
+
+This bootstrap prepares:
+
+- the Packmate application in `packmate-lab`
+- the Weather and Baggage MCP servers
+- the MCP registration used by Playground
+- the OGX-connected backend configuration
+- the project pipeline server used later for evaluation
+
+After this step, the rest of the workshop is about using and understanding the
+prepared AI workflow.
+
+**CHECKPOINT**
+
+- [ ] I cloned the repository
+- [ ] I authenticated `oc` as my user
+- [ ] `make workshop-ready` completed successfully
+
+**IF IT DOESN'T WORK**
+
+Run:
+
+```bash
+make preflight
+make prepare-workshop
+make verify-workshop
+```
+
+If the failure persists, ask the instructor for help.
+
+## Module 3 - Meet the shared model
 
 **WHAT YOU WILL DO**
 
@@ -209,7 +289,7 @@ In this workshop, `my-first-model` is the project that exposes the shared model.
 
 Confirm that the shared model in `my-first-model` is `Ready`.
 
-## Module 3 - Prototype in Playground
+## Module 4 - Prototype in Playground
 
 **WHAT YOU WILL DO**
 
@@ -268,7 +348,7 @@ you commit anything to the application.
 
 Re-open the Playground and confirm the selected project and model.
 
-## Module 4 - Give Packmate tools with MCP
+## Module 5 - Give Packmate tools with MCP
 
 **WHAT YOU WILL DO**
 
@@ -343,7 +423,7 @@ That is the core mental model of agentic AI in this workshop.
 
 Ask the instructor to run `make verify-workshop`.
 
-## Module 5 - From Playground to Code Server and Python
+## Module 6 - From Playground to Code Server and Python
 
 **WHAT YOU WILL DO**
 
@@ -418,14 +498,7 @@ If you want to inspect the code path, look at:
 **STEP-BY-STEP INSTRUCTIONS**
 
 1. Open the terminal in Code Server.
-2. Clone the repository:
-
-```bash
-git clone https://github.com/Lindagh1/packmate-rhoai-35-workshop.git
-cd packmate-rhoai-35-workshop
-```
-
-3. In the Code Server file explorer, open the cloned repository and inspect:
+2. In the Code Server file explorer, open the cloned repository and inspect:
 
 - `app/frontend`
 - `app/backend`
@@ -442,7 +515,7 @@ Also inspect these files if you want to understand the runtime path:
 - `examples/01_call_model.py`
 - `examples/02_packmate_with_tools.py`
 
-4. In the Code Server terminal, run:
+3. In the Code Server terminal, run:
 
 ```bash
 python examples/01_call_model.py
@@ -510,7 +583,7 @@ How the MCP servers were built for the workshop:
 
 Verify that the Workbench can reach in-cluster services and that the workshop preparation completed successfully.
 
-## Module 6 - Open the integrated Packmate application
+## Module 7 - Open the integrated Packmate application
 
 **WHAT YOU WILL DO**
 
@@ -564,7 +637,7 @@ Important:
 
 Ask the instructor to run `make diagnose`.
 
-## Module 7 - Evaluate the application
+## Module 8 - Evaluate the application
 
 **WHAT YOU WILL DO**
 
@@ -634,7 +707,7 @@ For local troubleshooting, you can still run the equivalent script in Code Serve
 python examples/03_evaluate_packmate.py
 ```
 
-## Module 8 - Understand the architecture
+## Module 9 - Understand the architecture
 
 **WHAT YOU WILL DO**
 
@@ -661,7 +734,7 @@ You can explain the role of Workbench, Playground, OGX, KServe, vLLM, MCP, and e
 
 - [ ] I can explain the high-level architecture
 
-## Module 9 - From prototype to production
+## Module 10 - From prototype to production
 
 **WHAT YOU WILL DO**
 

@@ -50,6 +50,10 @@ The workshop reuses the shared platform model and adds only lightweight services
 
 ## Setup commands
 
+In the self-service participant model, these commands can be run directly by the
+participant after cloning the repository in Code Server and authenticating the
+OpenShift CLI as their user:
+
 ```bash
 make preflight
 make prepare-workshop
