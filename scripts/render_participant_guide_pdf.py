@@ -18,24 +18,6 @@ GUIDE_MD = ROOT / "workshop" / "PARTICIPANT_GUIDE.md"
 OUTPUT_PDF = ROOT / "workshop" / "PARTICIPANT_GUIDE.pdf"
 
 
-def add_figure_captions(html_text: str) -> str:
-    pattern = re.compile(
-        r"<p><img alt=\"(?P<alt>[^\"]*)\" src=\"(?P<src>[^\"]*)\" ?/?></p>"
-    )
-
-    def replace(match: re.Match[str]) -> str:
-        alt = html.escape(match.group("alt"))
-        src = match.group("src")
-        return (
-            "<figure>"
-            f"<img alt=\"{alt}\" src=\"{src}\" />"
-            f"<figcaption>{alt}</figcaption>"
-            "</figure>"
-        )
-
-    return pattern.sub(replace, html_text)
-
-
 def build_html(markdown_text: str) -> str:
     markdown_text = re.sub(
         r"(?m)^## Module ",
@@ -47,7 +29,6 @@ def build_html(markdown_text: str) -> str:
         extensions=["extra", "fenced_code", "sane_lists", "toc"],
         output_format="html5",
     )
-    body = add_figure_captions(body)
     rendered_at = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     return f"""<!DOCTYPE html>
@@ -150,6 +131,17 @@ def build_html(markdown_text: str) -> str:
       color: var(--rh-dark);
     }}
 
+    h4 {{
+      margin: 4mm 0 2mm 0;
+      font-size: 10pt;
+      text-transform: none;
+      color: var(--rh-dark);
+      background: #f5f5f5;
+      border-left: 4px solid var(--rh-red);
+      padding: 6px 10px;
+      border-radius: 4px;
+    }}
+
     p, li {{
       orphans: 3;
       widows: 3;
@@ -193,34 +185,19 @@ def build_html(markdown_text: str) -> str:
       padding: 0;
     }}
 
-    figure {{
-      margin: 4mm auto 7mm auto;
-      page-break-inside: avoid;
-      break-inside: avoid;
-    }}
-
-    figure img {{
+    img {{
       display: block;
       width: auto;
-      max-width: 88%;
+      max-width: 76%;
       max-height: 165mm;
       height: auto;
-      margin: 0 auto 2.5mm auto;
+      margin: 0 auto 6mm auto;
       border: 1px solid var(--rh-border);
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(21, 21, 21, 0.08);
       page-break-inside: avoid;
       break-inside: avoid;
       image-rendering: -webkit-optimize-contrast;
-    }}
-
-    figcaption {{
-      max-width: 88%;
-      margin: 0 auto;
-      font-size: 9pt;
-      font-weight: 700;
-      color: var(--rh-gray);
-      text-align: left;
     }}
 
     a {{

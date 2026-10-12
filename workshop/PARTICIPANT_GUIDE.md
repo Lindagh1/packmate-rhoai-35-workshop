@@ -80,6 +80,8 @@ the self-service bootstrap later in the workshop.
 
 **SCREENSHOT**
 
+#### Screenshot: OpenShift AI dashboard home page
+
 ![OpenShift AI dashboard home page](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/01-open-openshift-ai.png)
 
 **EXPECTED RESULT**
@@ -131,10 +133,24 @@ The project groups your AI resources. The Code Server Workbench is your browser-
 
 **SCREENSHOTS**
 
+#### Screenshot: Projects page before creating `packmate-lab`
+
 ![Projects page before creating packmate-lab](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/02-data-science-projects.png)
+
+#### Screenshot: Create project dialog for `packmate-lab`
+
 ![Create project dialog for packmate-lab](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/03-create-project.png)
+
+#### Screenshot: Create Workbench form for `packmate-workbench`
+
 ![Create workbench form for packmate-workbench](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/04-create-workbench.png)
+
+#### Screenshot: Workbench list showing `packmate-workbench` running
+
 ![Workbench list showing packmate-workbench running](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/05-workbench-running.png)
+
+#### Screenshot: Open Workbench action from the list
+
 ![Open workbench action from the workbench list](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/06-open-workbench.png)
 
 **EXPECTED RESULT**
@@ -268,9 +284,9 @@ python examples/01_call_model.py
 
 **SCREENSHOTS**
 
+#### Screenshot: AI asset endpoints page with the shared model visible
+
 ![AI asset endpoints page in Gen AI studio](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/07-ai-asset-endpoints.png)
-![Shared llama-32-3b-instruct model endpoint in my-first-model](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/08-packmate-model-endpoint.png)
-![Workbench terminal showing the Python model call example](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
 
 **EXPECTED RESULT**
 
@@ -325,7 +341,8 @@ Playground is the fastest place to experiment before you write application code.
 
 **SCREENSHOTS**
 
-![Playground with the shared model selected](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/09-playground-model-selected.png)
+#### Screenshot: Playground with the shared model selected and the Prompt tab open
+
 ![Prompt tab with the Packmate system instructions](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/10-playground-system-prompt.png)
 
 **EXPECTED RESULT**
@@ -387,10 +404,13 @@ MCP gives the model live capabilities instead of only static knowledge.
 
 **SCREENSHOTS**
 
+#### Screenshot: Playground MCP panel with the Weather server enabled
+
 ![MCP tab with the Weather server enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/13-weather-mcp-enabled.png)
-![Weather tool call details in Playground](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/14-weather-tool-call.png)
+
+#### Screenshot: Playground MCP panel with the Baggage Policy server enabled
+
 ![MCP tab with the Baggage Policy server enabled](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/15-baggage-mcp-enabled.png)
-![Baggage policy tool call details in Playground](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/16-baggage-tool-call.png)
 
 **EXPECTED RESULT**
 
@@ -507,6 +527,8 @@ python examples/02_packmate_with_tools.py
 
 **SCREENSHOT**
 
+#### Screenshot: Workbench terminal running the Packmate Python examples
+
 ![Workbench terminal running the Packmate Python examples](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/17-workbench-python-call.png)
 
 **EXPECTED RESULT**
@@ -575,6 +597,8 @@ This shows how prototype behavior becomes part of an application with extra cont
 
 **SCREENSHOT**
 
+#### Screenshot: Packmate web application answering a travel question
+
 ![Packmate web application answering a travel question](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/18-packmate-application.png)
 
 **EXPECTED RESULT**
@@ -638,6 +662,8 @@ python examples/03_evaluate_packmate.py
 ```
 
 **SCREENSHOT**
+
+#### Screenshot: Pipeline run result for the Packmate evaluation
 
 ![Pipeline run result for the Packmate evaluation](/home/lgheziel/Projects/packmate-rhoai-35-workshop/workshop/images/19-evaluation-result.png)
 
