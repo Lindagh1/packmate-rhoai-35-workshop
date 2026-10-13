@@ -72,7 +72,7 @@ if [[ "${FAILED}" -gt 0 ]]; then
   if [[ "${OGX_SPEC_STATE}" != "Managed" || "${OGX_READY_STATUS}" != "True" ]]; then
     note "Recovery action" "Enable OGX for Playground: oc patch datasciencecluster ${DSC_NAME} --type=merge -p '{\"spec\":{\"components\":{\"ogx\":{\"managementState\":\"Managed\"}}}}'"
     if [[ "${LLAMASTACK_SPEC_STATE}" == "Managed" ]]; then
-      note "Recovery action" "If OGX provisioning fails with a LlamaStackOperator deprecation error, also run: oc patch datasciencecluster ${DSC_NAME} --type=merge -p '{\"spec\":{\"components\":{\"llamastackoperator\":{\"managementState\":\"Removed\"}}}}'"
+      note "Recovery action" "On fresh RHOAI 3.5 sandboxes that still declare the legacy Llama Stack component, also run: oc patch datasciencecluster ${DSC_NAME} --type=merge -p '{\"spec\":{\"components\":{\"llamastackoperator\":{\"managementState\":\"Removed\"}}}}'"
     fi
   fi
   printf 'PREFLIGHT FAILED\n'

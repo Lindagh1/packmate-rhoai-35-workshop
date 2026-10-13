@@ -64,6 +64,80 @@ packmate_assert_rhoai_35() {
   [[ "${version}" == 3.5* ]] || packmate_die "Expected Red Hat OpenShift AI 3.5.x, got ${version}"
 }
 
+packmate_detect_ogx_spec_state() {
+  local dsc_name="${1:-$(packmate_detect_dsc_name)}"
+  oc get datasciencecluster "${dsc_name}" -o jsonpath='{.spec.components.ogx.managementState}' 2>/dev/null || true
+}
+
+packmate_detect_ogx_ready_status() {
+  local dsc_name="${1:-$(packmate_detect_dsc_name)}"
+  oc get datasciencecluster "${dsc_name}" -o jsonpath='{.status.conditions[?(@.type=="OGXReady")].status}' 2>/dev/null || true
+}
+
+packmate_detect_llamastack_spec_state() {
+  local dsc_name="${1:-$(packmate_detect_dsc_name)}"
+  oc get datasciencecluster "${dsc_name}" -o jsonpath='{.spec.components.llamastackoperator.managementState}' 2>/dev/null || true
+}
+
+packmate_wait_for_ogx_ready() {
+  local dsc_name="${1:-$(packmate_detect_dsc_name)}"
+  local timeout_seconds="${2:-600}"
+  local sleep_seconds="${3:-15}"
+  local waited=0
+
+  while (( waited <= timeout_seconds )); do
+    local ogx_ready
+    ogx_ready="$(packmate_detect_ogx_ready_status "${dsc_name}")"
+    if [[ "${ogx_ready}" == "True" ]]; then
+      return 0
+    fi
+
+    local ogx_reason
+    ogx_reason="$(oc get datasciencecluster "${dsc_name}" -o jsonpath='{.status.conditions[?(@.type=="OGXReady")].reason}' 2>/dev/null || true)"
+    packmate_log "Waiting for OGX to become ready on ${dsc_name} (${ogx_ready:-Unknown}/${ogx_reason:-Unknown})..."
+    sleep "${sleep_seconds}"
+    waited=$((waited + sleep_seconds))
+  done
+
+  return 1
+}
+
+packmate_ensure_ogx_ready() {
+  local dsc_name
+  dsc_name="$(packmate_detect_dsc_name)"
+
+  [[ -n "${dsc_name}" ]] || packmate_die "No DataScienceCluster found."
+
+  local ogx_spec_state ogx_ready_status lso_spec_state
+  ogx_spec_state="$(packmate_detect_ogx_spec_state "${dsc_name}")"
+  ogx_ready_status="$(packmate_detect_ogx_ready_status "${dsc_name}")"
+  lso_spec_state="$(packmate_detect_llamastack_spec_state "${dsc_name}")"
+
+  if [[ "${ogx_spec_state}" == "Managed" && "${ogx_ready_status}" == "True" ]]; then
+    packmate_log "OGX is already ready on ${dsc_name}."
+    return 0
+  fi
+
+  oc auth can-i patch datascienceclusters.datasciencecluster.opendatahub.io >/dev/null 2>&1 || \
+    packmate_die "Missing permission to patch DataScienceCluster ${dsc_name}. Run with a cluster-admin capable identity."
+
+  if [[ "${ogx_spec_state}" != "Managed" ]]; then
+    packmate_log "Enabling OGX on ${dsc_name}."
+    oc patch datasciencecluster "${dsc_name}" --type=merge -p '{"spec":{"components":{"ogx":{"managementState":"Managed"}}}}' >/dev/null
+  fi
+
+  if [[ "${ogx_ready_status}" != "True" && "${lso_spec_state}" == "Managed" ]]; then
+    packmate_log "Removing legacy Llama Stack operator component on ${dsc_name} to allow OGX rollout."
+    oc patch datasciencecluster "${dsc_name}" --type=merge -p '{"spec":{"components":{"llamastackoperator":{"managementState":"Removed"}}}}' >/dev/null
+  fi
+
+  if ! packmate_wait_for_ogx_ready "${dsc_name}"; then
+    packmate_die "OGX did not become ready on ${dsc_name}. Run 'make preflight' for the latest status."
+  fi
+
+  packmate_log "OGX is ready on ${dsc_name}."
+}
+
 packmate_route_domain() {
   oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}'
 }

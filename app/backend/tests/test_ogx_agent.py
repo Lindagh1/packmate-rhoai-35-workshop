@@ -15,7 +15,7 @@ from app.tools.settings import ToolSettings
 def _settings() -> LLMSettings:
     return LLMSettings(
         base_url="http://ogx.example/v1",
-        model="vllm-inference-1/llama-32-3b-instruct",
+        model="vllm-inference/llama-32-3b-instruct",
         api_key="dummy",
     )
 
@@ -127,7 +127,7 @@ async def test_ogx_agent_uses_mcp_outputs_and_returns_packing_response() -> None
     first_kwargs = mock_client.responses.create.call_args_list[0].kwargs
     second_kwargs = mock_client.responses.create.call_args_list[1].kwargs
     final_kwargs = mock_client.responses.create.call_args_list[2].kwargs
-    assert first_kwargs["model"] == "vllm-inference-1/llama-32-3b-instruct"
+    assert first_kwargs["model"] == "vllm-inference/llama-32-3b-instruct"
     assert first_kwargs["tools"][0]["type"] == "mcp"
     assert first_kwargs["tools"][0]["allowed_tools"] == ["get_weather"]
     assert second_kwargs["tools"][0]["allowed_tools"] == ["check_baggage_rules"]

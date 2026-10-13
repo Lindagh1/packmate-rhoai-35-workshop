@@ -137,7 +137,7 @@ check_contains \
 
 check_contains \
   "Python app example" \
-  "oc exec -n '${WORKSHOP_NAMESPACE}' '${BACKEND_POD}' -- sh -lc \"python -c 'import json,urllib.request;payload={\\\"message\\\":\\\"I am going to Rome next week with cabin baggage only. Check the weather and tell me if I can take a 150 ml bottle and a power bank.\\\",\\\"traveler_profile\\\":{\\\"trip_type\\\":\\\"leisure\\\",\\\"baggage_type\\\":\\\"cabin\\\",\\\"activities\\\":[\\\"walking\\\",\\\"museum\\\"]}};req=urllib.request.Request(\\\"http://localhost:8080/api/v1/chat\\\",data=json.dumps(payload).encode(),headers={\\\"Content-Type\\\":\\\"application/json\\\"},method=\\\"POST\\\");resp=urllib.request.urlopen(req, timeout=180);print(resp.read().decode())'\"" \
+  "oc exec -n '${WORKSHOP_NAMESPACE}' '${BACKEND_POD}' -- sh -lc \"curl -sS -m 180 -X POST http://localhost:8080/api/v1/chat -H 'Content-Type: application/json' -d '{\\\"message\\\":\\\"I am going to Rome next week with cabin baggage only. Check the weather and tell me if I can take a 150 ml bottle and a power bank.\\\",\\\"traveler_profile\\\":{\\\"trip_type\\\":\\\"leisure\\\",\\\"baggage_type\\\":\\\"cabin\\\",\\\"activities\\\":[\\\"walking\\\",\\\"museum\\\"]}}'\"" \
   '"destination"'
 
 STREAM_SMOKE_OUTPUT="$(mktemp)"

@@ -21,8 +21,8 @@ reset-participant:
 cleanup:
 	@bash "$(ROOT)/scripts/cleanup.sh"
 
-workshop-ready: preflight prepare-workshop verify-workshop
-
+workshop-ready:
+	@bash "$(ROOT)/scripts/workshop-ready.sh"
 participant-guide-pdf:
 	@python3 "$(ROOT)/scripts/render_participant_guide_pdf.py"
 

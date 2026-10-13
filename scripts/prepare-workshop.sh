@@ -16,8 +16,174 @@ APP_LABEL_VALUE="${WORKSHOP_PART_OF_LABEL#*=}"
 MANAGED_LABEL_KEY="${WORKSHOP_MANAGED_LABEL%%=*}"
 MANAGED_LABEL_VALUE="${WORKSHOP_MANAGED_LABEL#*=}"
 BUILD_TAG="workshop"
+OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT="ogx-postgres"
+OGX_BOOTSTRAP_POSTGRES_SERVICE="ogx-postgres"
+OGX_BOOTSTRAP_PG_CREDS_NAME="ogx-postgres-secret"
+OGX_BOOTSTRAP_POSTGRES_PVC="ogx-postgres-data"
+OGX_BOOTSTRAP_SERVER_NAME="packmate-ogx"
+OGX_BOOTSTRAP_POSTGRES_DB="ogx"
+OGX_BOOTSTRAP_POSTGRES_USER="ogx"
+OGX_BOOTSTRAP_PG_CREDS_KEY="pgpass"
+OGX_BOOTSTRAP_PG_CREDS_VALUE="packmate-ogx"
 
 packmate_apply_namespace
+
+ensure_ogx_server() {
+  local existing_ogx
+  existing_ogx="$(oc get ogxserver -n "${MODEL_NAMESPACE}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+
+  if [[ -z "${existing_ogx}" ]]; then
+    packmate_log "No OGXServer found in ${MODEL_NAMESPACE}; creating the supported OGX bootstrap resources."
+
+    oc -n "${MODEL_NAMESPACE}" create secret generic "${OGX_BOOTSTRAP_PG_CREDS_NAME}" \
+      --from-literal="${OGX_BOOTSTRAP_PG_CREDS_KEY}=${OGX_BOOTSTRAP_PG_CREDS_VALUE}" \
+      --dry-run=client -o yaml | oc apply -f -
+
+    oc apply -f - <<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${OGX_BOOTSTRAP_POSTGRES_PVC}
+  namespace: ${MODEL_NAMESPACE}
+  labels:
+    ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+    ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}
+  namespace: ${MODEL_NAMESPACE}
+  labels:
+    ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+    ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}
+  template:
+    metadata:
+      labels:
+        app: ${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}
+        ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+        ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+    spec:
+      containers:
+        - name: postgres
+          image: quay.io/sclorg/postgresql-15-c9s:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRESQL_USER
+              value: ${OGX_BOOTSTRAP_POSTGRES_USER}
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ${OGX_BOOTSTRAP_PG_CREDS_NAME}
+                  key: ${OGX_BOOTSTRAP_PG_CREDS_KEY}
+            - name: POSTGRESQL_DATABASE
+              value: ${OGX_BOOTSTRAP_POSTGRES_DB}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ${OGX_BOOTSTRAP_POSTGRES_PVC}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${OGX_BOOTSTRAP_POSTGRES_SERVICE}
+  namespace: ${MODEL_NAMESPACE}
+  labels:
+    ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+    ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+spec:
+  selector:
+    app: ${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: ogx.io/v1beta1
+kind: OGXServer
+metadata:
+  name: ${OGX_BOOTSTRAP_SERVER_NAME}
+  namespace: ${MODEL_NAMESPACE}
+  labels:
+    ${APP_LABEL_KEY}: ${APP_LABEL_VALUE}
+    ${MANAGED_LABEL_KEY}: "${MANAGED_LABEL_VALUE}"
+spec:
+  distribution:
+    name: rh-dev
+  network:
+    port: 8321
+  workload:
+    replicas: 1
+    overrides:
+      env:
+        - name: VLLM_URL
+          value: 'http://${MODEL_SERVICE}.${MODEL_NAMESPACE}.svc.cluster.local:8080/v1'
+        - name: INFERENCE_MODEL
+          value: ${MODEL_NAME}
+        - name: VLLM_TLS_VERIFY
+          value: 'false'
+        - name: POSTGRES_HOST
+          value: ${OGX_BOOTSTRAP_POSTGRES_SERVICE}.${MODEL_NAMESPACE}.svc.cluster.local
+        - name: POSTGRES_PORT
+          value: '5432'
+        - name: POSTGRES_DB
+          value: ${OGX_BOOTSTRAP_POSTGRES_DB}
+        - name: POSTGRES_USER
+          value: ${OGX_BOOTSTRAP_POSTGRES_USER}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ${OGX_BOOTSTRAP_PG_CREDS_NAME}
+              key: ${OGX_BOOTSTRAP_PG_CREDS_KEY}
+EOF
+  fi
+
+  OGX_SERVER_NAME="$(oc get ogxserver -n "${MODEL_NAMESPACE}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+  if [[ -z "${OGX_SERVER_NAME}" ]]; then
+    printf 'ERROR: no OGXServer found in %s\n' "${MODEL_NAMESPACE}" >&2
+    exit 1
+  fi
+
+  if oc get deployment "${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}" -n "${MODEL_NAMESPACE}" >/dev/null 2>&1; then
+    oc rollout status "deployment/${OGX_BOOTSTRAP_POSTGRES_DEPLOYMENT}" -n "${MODEL_NAMESPACE}" --timeout=300s >/dev/null
+  fi
+
+  local waited=0
+  local ogx_phase
+  while (( waited <= 600 )); do
+    ogx_phase="$(oc get ogxserver "${OGX_SERVER_NAME}" -n "${MODEL_NAMESPACE}" -o jsonpath='{.status.phase}' 2>/dev/null || true)"
+    if [[ "${ogx_phase}" == "Ready" ]]; then
+      break
+    fi
+    packmate_log "Waiting for OGXServer ${OGX_SERVER_NAME} to become Ready (${ogx_phase:-Unknown})..."
+    sleep 15
+    waited=$((waited + 15))
+  done
+
+  if [[ "${ogx_phase}" != "Ready" ]]; then
+    printf 'ERROR: OGXServer %s in %s did not become Ready\n' "${OGX_SERVER_NAME}" "${MODEL_NAMESPACE}" >&2
+    exit 1
+  fi
+}
+
+ensure_ogx_server
 
 OGX_SERVER_NAME="$(oc get ogxserver -n "${MODEL_NAMESPACE}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
 if [[ -z "${OGX_SERVER_NAME}" ]]; then
@@ -26,7 +192,8 @@ if [[ -z "${OGX_SERVER_NAME}" ]]; then
 fi
 
 OGX_BASE_URL="http://${OGX_SERVER_NAME}-service.${MODEL_NAMESPACE}.svc.cluster.local:8321/v1"
-OGX_MODEL_ID="vllm-inference-1/${MODEL_NAME}"
+OGX_INFERENCE_PROVIDER_ID="$(oc get ogxserver "${OGX_SERVER_NAME}" -n "${MODEL_NAMESPACE}" -o jsonpath='{.status.distributionConfig.providers[?(@.api=="inference")].provider_id}' 2>/dev/null || true)"
+OGX_MODEL_ID="${OGX_INFERENCE_PROVIDER_ID:-vllm-inference}/${MODEL_NAME}"
 OGX_WEATHER_MCP_URL="http://weather-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
 OGX_BAGGAGE_MCP_URL="http://baggage-policy-mcp.${WORKSHOP_NAMESPACE}.svc.cluster.local:8080/mcp"
 PIPELINE_S3_ACCESS_KEY="packmate-workshop"
