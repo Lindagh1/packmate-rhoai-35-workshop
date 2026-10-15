@@ -19,13 +19,16 @@ fail() { printf '%-30s FAIL\n' "$1"; FAIL_COUNT=$((FAIL_COUNT + 1)); }
 check_http() {
   local label="$1"
   local url="$2"
-  local code
-  code="$(curl -sk -o /dev/null -w '%{http_code}' -m 25 "${url}" || echo 000)"
-  if [[ "${code}" == "200" ]]; then
-    pass "${label}"
-  else
-    fail "${label}"
-  fi
+  local code attempt
+  for attempt in 1 2 3 4 5; do
+    code="$(curl -sk -o /dev/null -w '%{http_code}' -m 25 "${url}" || echo 000)"
+    if [[ "${code}" == "200" ]]; then
+      pass "${label}"
+      return 0
+    fi
+    sleep 5
+  done
+  fail "${label}"
 }
 
 check_contains() {
