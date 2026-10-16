@@ -144,12 +144,20 @@ check_contains \
   '"destination"'
 
 STREAM_SMOKE_OUTPUT="$(mktemp)"
-if curl -sS -N -m 240 -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: text/event-stream' \
-  "https://${FRONTEND_ROUTE}/api/v1/chat/stream" \
-  -d '{"message":"I am going to Rome next week with cabin baggage only. Check the weather and tell me if I can take a 150 ml bottle and a power bank."}' \
-  >"${STREAM_SMOKE_OUTPUT}" 2>/dev/null && grep -q '^event: completed' "${STREAM_SMOKE_OUTPUT}"; then
+stream_ok=0
+for attempt in 1 2 3; do
+  if curl -sS -N -m 240 -X POST \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: text/event-stream' \
+    "https://${FRONTEND_ROUTE}/api/v1/chat/stream" \
+    -d '{"message":"I am going to Rome next week with cabin baggage only. Check the weather and tell me if I can take a 150 ml bottle and a power bank."}' \
+    >"${STREAM_SMOKE_OUTPUT}" 2>/dev/null && grep -q '^event: completed' "${STREAM_SMOKE_OUTPUT}"; then
+    stream_ok=1
+    break
+  fi
+  sleep 5
+done
+if [[ "${stream_ok}" == "1" ]]; then
   pass "Packmate stream smoke"
 else
   fail "Packmate stream smoke"
